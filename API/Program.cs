@@ -65,7 +65,7 @@ app.MapPost("/pedidos", async (PedidoDTO dto, PizzeriaDb db) =>
         // Enviar Socket a la cocina
         try
         {
-            using var tcpClient = new System.Net.Sockets.TcpClient("127.0.0.1", 5050);
+            using var tcpClient = new System.Net.Sockets.TcpClient("127.0.0.2", 5050);
             using var stream = tcpClient.GetStream();
             var mensaje = System.Text.Encoding.UTF8.GetBytes($"NUEVO_PEDIDO:{nuevo.Id}");
             await stream.WriteAsync(mensaje);

@@ -10,8 +10,8 @@ using HttpClient client = new HttpClient();
 // Ajustado a strings planos para emparejar directamente con las columnas de tu base de datos física
 var nuevoPedido = new {
     ClienteNombre = "Estudiante ET12",
-    ClienteDireccion = "Av. Siempre Viva 123",
-    PizzaVariedad = "Muzzarella Grande",
+    ClienteDireccion = "Av. Corrientes 1234",
+    PizzaVariedad = "Muzzarella con pepperoni",
     PizzaPrecio = 8500.00m,
     Cantidad = 1
 };
