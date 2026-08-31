@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/ClienteApp/ClienteApp.csproj",
+      "projectUniqueName": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/ClienteApp/ClienteApp.csproj",
       "projectName": "ClienteApp",
-      "projectPath": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/ClienteApp/ClienteApp.csproj",
+      "projectPath": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/ClienteApp/ClienteApp.csproj",
       "packagesPath": "/home/et12alumno/.nuget/packages/",
-      "outputPath": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/ClienteApp/obj/",
+      "outputPath": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/ClienteApp/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/et12alumno/.nuget/NuGet/NuGet.Config"

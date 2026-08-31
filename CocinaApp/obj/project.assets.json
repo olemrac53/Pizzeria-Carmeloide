@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/CocinaApp/CocinaApp.csproj",
+      "projectUniqueName": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/CocinaApp/CocinaApp.csproj",
       "projectName": "CocinaApp",
-      "projectPath": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/CocinaApp/CocinaApp.csproj",
+      "projectPath": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/CocinaApp/CocinaApp.csproj",
       "packagesPath": "/home/et12alumno/.nuget/packages/",
-      "outputPath": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/CocinaApp/obj/",
+      "outputPath": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/CocinaApp/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/et12alumno/.nuget/NuGet/NuGet.Config"

@@ -1233,11 +1233,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/API/API.csproj",
+      "projectUniqueName": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/API/API.csproj",
       "projectName": "API",
-      "projectPath": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/API/API.csproj",
+      "projectPath": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/API/API.csproj",
       "packagesPath": "/home/et12alumno/.nuget/packages/",
-      "outputPath": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/API/obj/",
+      "outputPath": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/et12alumno/.nuget/NuGet/NuGet.Config"

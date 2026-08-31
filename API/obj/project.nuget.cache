@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/fAZl7jqk/0=",
+  "dgSpecHash": "yjyjXaEvcy0=",
   "success": true,
-  "projectFilePath": "/home/et12alumno/Escritorio/cafeteria/Software-3.2/API/API.csproj",
+  "projectFilePath": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/API/API.csproj",
   "expectedPackageFiles": [
     "/home/et12alumno/.nuget/packages/bouncycastle.cryptography/2.6.2/bouncycastle.cryptography.2.6.2.nupkg.sha512",
     "/home/et12alumno/.nuget/packages/dapper/2.1.79/dapper.2.1.79.nupkg.sha512",
