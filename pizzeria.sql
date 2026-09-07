@@ -1,5 +1,4 @@
--- Active: 1776719132005@@127.0.0.1@3306@5to_pizzeriadb
--- 1. Crear y usar la base de datos
+
 
 
 DROP DATABASE IF EXISTS 5to_PizzeriaDB;
@@ -7,7 +6,7 @@ CREATE DATABASE 5to_PizzeriaDB;
 USE 5to_PizzeriaDB;
 
 -- 2. TABLA FUERTE: Clientes
--- Guarda la información de las personas de forma única.
+
 CREATE TABLE Clientes (
     Id INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(150) NOT NULL,
@@ -39,8 +38,8 @@ CREATE TABLE Pedidos (
 -- Un pedido puede tener varias pizzas, y una pizza puede estar en varios pedidos.
 CREATE TABLE DetallesPedido (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    PedidoId INT NOT NULL, -- Clave Foránea hacia el Ticket/Pedido
-    PizzaId INT NOT NULL,  -- Clave Foránea hacia el Menú/Pizza
+    PedidoId INT NOT NULL, 
+    PizzaId INT NOT NULL,  
     Cantidad INT NOT NULL DEFAULT 1,
     -- Restricciones de integridad referencial
     FOREIGN KEY (PedidoId) REFERENCES Pedidos(Id) ON DELETE CASCADE,
