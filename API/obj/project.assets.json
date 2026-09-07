@@ -1237,6 +1237,7 @@
       "packagesPath": "/home/et12alumno/.nuget/packages/",
       "outputPath": "/home/et12alumno/Escritorio/cafeteria/Pizzeria-Carmeloide/API/obj/",
       "projectStyle": "PackageReference",
+      "centralPackageVersionsManagementEnabled": true,
       "configFilePaths": [
         "/home/et12alumno/.nuget/NuGet/NuGet.Config"
       ],
@@ -1271,32 +1272,48 @@
         "dependencies": {
           "Dapper": {
             "target": "Package",
-            "version": "[2.1.79, )"
+            "version": "[2.1.79, )",
+            "versionCentrallyManaged": true
           },
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[9.0.0, )"
+            "version": "[9.0.0, )",
+            "versionCentrallyManaged": true
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[9.0.0, )"
+            "version": "[9.0.0, )",
+            "versionCentrallyManaged": true
           },
           "MySql.Data": {
             "target": "Package",
-            "version": "[26.7.0, )"
+            "version": "[26.7.0, )",
+            "versionCentrallyManaged": true
           },
           "Pomelo.EntityFrameworkCore.MySql": {
             "target": "Package",
-            "version": "[9.0.0, )"
+            "version": "[9.0.0, )",
+            "versionCentrallyManaged": true
           },
           "Scalar.AspNetCore": {
             "target": "Package",
-            "version": "[2.17.3, )"
+            "version": "[2.17.3, )",
+            "versionCentrallyManaged": true
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
-            "version": "[10.2.3, )"
+            "version": "[10.2.3, )",
+            "versionCentrallyManaged": true
           }
+        },
+        "centralPackageVersions": {
+          "Dapper": "2.1.79",
+          "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "9.0.0",
+          "Microsoft.EntityFrameworkCore": "9.0.0",
+          "MySql.Data": "26.7.0",
+          "Pomelo.EntityFrameworkCore.MySql": "9.0.0",
+          "Scalar.AspNetCore": "2.17.3",
+          "Swashbuckle.AspNetCore": "10.2.3"
         },
         "imports": [
           "net461",

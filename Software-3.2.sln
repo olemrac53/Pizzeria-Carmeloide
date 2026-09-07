@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
@@ -8,6 +8,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClienteApp", "ClienteApp\ClienteApp.csproj", "{DBC9449F-4535-4381-A9F3-142CB190F895}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{58B95566-E6DD-4260-8D11-4689EB22ED01}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{FE5DC947-6F38-4F4D-8AB0-481FFBB05D96}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

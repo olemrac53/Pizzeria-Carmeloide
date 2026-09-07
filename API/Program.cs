@@ -69,7 +69,7 @@ public partial class Program
                 // Enviar Socket a la cocina
                 try
                 {
-                    using var tcpClient = new TcpClient("128.0.0.1", 5050);
+                    using var tcpClient = new TcpClient("127.0.0.0", 5050);
                     using var stream = tcpClient.GetStream();
                     var mensaje = Encoding.UTF8.GetBytes($"NUEVO_PEDIDO:{nuevo.Id}");
                     await stream.WriteAsync(mensaje);
