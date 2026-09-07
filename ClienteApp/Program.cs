@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 
-Console.WriteLine("=== APP CLIENTE (¡Tengo Hambre!) ===");
+Console.WriteLine("=== APP CLIENTE ===");
 Console.WriteLine("Presiona ENTER para pedir una Muzzarella...");
 Console.ReadLine();
 
