@@ -19,17 +19,20 @@ public partial class Program
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddRazorPages();
 
         var app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger(options => { options.RouteTemplate = "/openapi/{documentName}.json"; });
-            app.MapScalarApiReference();
-        }
+        
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger(options => { options.RouteTemplate = "/openapi/{documentName}.json"; });
+    app.MapScalarApiReference();
+
+    app.MapRazorPages();
+    app.MapGet("/", () => Results.Redirect("/pedidos"));
+}
+        
 
         app.MapGet("/pedidos", async (PizzeriaDb db) =>
             await db.Pedidos.Where(p => p.Activo).ToListAsync()
@@ -69,7 +72,7 @@ public partial class Program
                 // Enviar Socket a la cocina
                 try
                 {
-                    using var tcpClient = new TcpClient("127.0.0.0", 5050);
+                    using var tcpClient = new TcpClient("127.0.0.0", 5051);
                     using var stream = tcpClient.GetStream();
                     var mensaje = Encoding.UTF8.GetBytes($"NUEVO_PEDIDO:{nuevo.Id}");
                     await stream.WriteAsync(mensaje);
