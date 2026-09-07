@@ -4,7 +4,7 @@ using System.Text;
 Console.WriteLine("=== MÓDULO INTERNO: COCINA ===");
 
 // El puerto 5050 evitará el conflicto de 'Address already in use'
-TcpListener server = new TcpListener(System.Net.IPAddress.Parse("127.0.0.1"), 5050);
+TcpListener server = new TcpListener(System.Net.IPAddress.Parse("128.0.0.1"), 5050);
 server.Start();
 Console.WriteLine("Cocina en línea. Esperando comandas por Socket en puerto 5050...");
 
