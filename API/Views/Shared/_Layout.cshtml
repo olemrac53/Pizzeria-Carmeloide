@@ -1,0 +1,46 @@
+@* 
+   Este es el Layout compartido por TODAS las vistas de Home y Pedido.
+   Cada vista individual (Index, Agregar, Confirmacion) ya no necesita 
+   repetir <html>, <head> ni los links de Bootstrap: solo pone su 
+   contenido, y @RenderBody() de acá abajo lo inserta en el lugar justo.
+*@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Pizzería</title>
+
+    <!-- Bootstrap 5.3 CSS & Icons (compartido por todas las vistas) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    @* Cada vista puede agregar su propio <style> u otros <link> extra acá *@
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+
+    <!-- Navbar compartida por todas las páginas -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Pizzería </a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light btn-sm" asp-controller="Home" asp-action="Index">Menú</a>
+                <a class="btn btn-warning btn-sm" asp-controller="Pedido" asp-action="Agregar">Hacer Pedido</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Acá se inyecta el contenido específico de cada vista -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Bootstrap JS (por si alguna vista lo necesita, ej. modales) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* Cada vista puede agregar su propio <script> extra acá *@
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
