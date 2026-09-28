@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 @{
     Layout = null;
 }
@@ -7,27 +6,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pizzeria - Hacer Pedido</title>
-  <img src="https://www.restomenuqr.com.ar/adpunicenter/wp-content/uploads/2023/09/INICIO_MENU-966X645.jpg" alt="Imagen borrosa de una pizza">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 420px;
-      margin: 40px auto;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    input {
-      width: 100%;
-      padding: 6px;
-      box-sizing: border-box;
-    }
-    button {
-      margin-top: 15px;
-      padding: 8px 16px;
-    }
     #resultado {
       margin-top: 20px;
       white-space: pre-wrap;
@@ -38,26 +23,43 @@
 </head>
 <body>
 
-  <h2>Hacer un pedido</h2>
+  <div class="container py-4" style="max-width: 480px;">
 
-  <label for="nombre">Nombre del cliente</label>
-  <input type="text" id="nombre" value="Estudiante ET12">
+    <img src="https://img.magnific.com/fotos-premium/pizza-italiana-lista-verduras-frescas-sobre-fondo-madera_736061-566.jpg?semt=ais_hybrid&w=740&q=80"
+         class="img-fluid rounded mb-4" alt="Imagen de una pizza">
 
-  <label for="direccion">Dirección</label>
-  <input type="text" id="direccion" value="Av. Siempre Viva 123">
+    <h2 class="mb-4">Hacer un pedido</h2>
 
-  <label for="variedad">Variedad de pizza</label>
-  <input type="text" id="variedad" value="Muzzarella Grande">
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre del cliente</label>
+      <input type="text" id="nombre" class="form-control" value="Estudiante ET12">
+    </div>
 
-  <label for="precio">Precio</label>
-  <input type="number" id="precio" value="8500" step="0.01" min="0.01">
+    <div class="mb-3">
+      <label for="direccion" class="form-label">Dirección</label>
+      <input type="text" id="direccion" class="form-control" value="Av. Siempre Viva 123">
+    </div>
 
-  <label for="cantidad">Cantidad</label>
-  <input type="number" id="cantidad" value="1" min="1">
+    <div class="mb-3">
+      <label for="variedad" class="form-label">Variedad de pizza</label>
+      <input type="text" id="variedad" class="form-control" value="Muzzarella Grande">
+    </div>
 
-  <button id="btnPedir">Hacer pedido</button>
+    <div class="mb-3">
+      <label for="precio" class="form-label">Precio</label>
+      <input type="number" id="precio" class="form-control" value="8500" step="0.01" min="0.01">
+    </div>
 
-  <div id="resultado"></div>
+    <div class="mb-3">
+      <label for="cantidad" class="form-label">Cantidad</label>
+      <input type="number" id="cantidad" class="form-control" value="1" min="1">
+    </div>
+
+    <button id="btnPedir" class="btn btn-danger w-100">Hacer pedido</button>
+
+    <div id="resultado"></div>
+
+  </div>
 
   <script>
 
@@ -104,48 +106,3 @@
 
 </body>
 </html>
-=======
-@model IEnumerable<Torren3.Models.Pizza>
-@{
-    // Utilizamos el _Layout.cshtml compartido para mantener el menú y footer consistentes
-    ViewData["Title"] = "Inicio";
-}
-
-<!-- Sección Hero (Banner Principal) -->
-<section class="hero text-center py-5 bg-dark text-white">
-    <div class="container">
-        <h1 class="display-4">Bienvenido a Pizzería Torren</h1>
-        <p class="lead">Las mejores pizzas artesanales, listas para disfrutar.</p>
-        <!-- Tag Helper para redirigir al formulario de pedidos -->
-        <a asp-controller="Pedido" asp-action="Crear" class="btn btn-primary btn-lg mt-3">¡Pedir Ahora!</a>
-    </div>
-</section>
-
-<hr class="my-5">
-
-<!-- Sección de Productos Dinámicos -->
-<section class="productos container">
-    <h2 class="text-center mb-4">Nuestras Especialidades</h2>
-    
-    <div class="row">
-        @* Iteramos sobre el modelo dinámico enviado por el controlador *@
-        @foreach (var pizza in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <!-- Las imágenes deben guardarse en la carpeta wwwroot/img/ -->
-                    <img src="@pizza.ImagenUrl" class="card-img-top" alt="Foto de @pizza.Nombre">
-                    <div class="card-body">
-                        <h3 class="card-title h5">@pizza.Nombre</h3>
-                        <p class="card-text text-muted">@pizza.Descripcion</p>
-                        <p class="card-text fw-bold fs-5">$@pizza.Precio.ToString("N2")</p>
-                    </div>
-                    <div class="card-footer bg-transparent border-0">
-                        <a asp-controller="Pedido" asp-action="Agregar" asp-route-id="@pizza.Id" class="btn btn-outline-success w-100">Agregar al Carrito</a>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</section>
->>>>>>> Stashed changes
