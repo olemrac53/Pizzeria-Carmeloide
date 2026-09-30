@@ -1,3 +1,4 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @* 
    Este es el Layout compartido por TODAS las vistas de Home y Pedido.
    Cada vista individual (Index, Agregar, Confirmacion) ya no necesita 
@@ -19,21 +20,24 @@
     @* Cada vista puede agregar su propio <style> u otros <link> extra acá *@
     @RenderSection("Styles", required: false)
 </head>
-<body>
+<body class="d-flex min-vh-100">
 
     <!-- Navbar compartida por todas las páginas -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Pizzería </a>
-            <div class="d-flex gap-2">
+    <nav class="p-3 text-white bg-dark" style="width: 220px;">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">Pizzería </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto gap-2">
+            <li class="nav-item">
                 <a class="btn btn-outline-light btn-sm" asp-controller="Home" asp-action="Index">Menú</a>
+            </li>
+            <li>
                 <a class="btn btn-warning btn-sm" asp-controller="Pedido" asp-action="Agregar">Hacer Pedido</a>
-            </div>
-        </div>
+            </li>
+        </ul>
     </nav>
 
     <!-- Acá se inyecta el contenido específico de cada vista -->
-    <main>
+    <main class="flex-grow-1 p-4 text-center">
         @RenderBody()
     </main>
 
