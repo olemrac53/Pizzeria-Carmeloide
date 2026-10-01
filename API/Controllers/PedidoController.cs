@@ -11,7 +11,6 @@ namespace PizzeriaBackend.Controllers
     {
         private readonly PizzeriaDb _db;
 
-        // Inyección del DbContext existente de Entity Framework
         public PedidoController(PizzeriaDb db)
         {
             _db = db;
@@ -19,8 +18,16 @@ namespace PizzeriaBackend.Controllers
 
         // GET: /Pedido/Agregar (Muestra el formulario HTML)
         [HttpGet]
-        public IActionResult Agregar()
+        public async Task<IActionResult> Agregar()
         {
+            // Trae las pizzas reales cargadas en la tabla Pizzas de la base de datos,
+            // ordenadas por nombre, para llenar el <select> del formulario.
+            var pizzas = await _db.Pizzas
+                .OrderBy(p => p.Variedad)
+                .ToListAsync();
+
+            ViewBag.Pizzas = pizzas;
+
             return View();
         }
 
@@ -31,21 +38,18 @@ namespace PizzeriaBackend.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Pizzas = await _db.Pizzas.OrderBy(p => p.Variedad).ToListAsync();
                 return View(dto);
             }
 
             try
             {
-                // 1. Reutilización de la lógica relacional del repositorio:
-                // Busca o crea el cliente
                 var cliente = await _db.Clientes.FirstOrDefaultAsync(c => c.Nombre == dto.ClienteNombre)
                               ?? new Cliente { Nombre = dto.ClienteNombre, Direccion = dto.ClienteDireccion };
 
-                // Busca o crea la pizza en el menú
                 var pizza = await _db.Pizzas.FirstOrDefaultAsync(p => p.Variedad == dto.PizzaVariedad)
                             ?? new Pizza { Variedad = dto.PizzaVariedad, Precio = dto.PizzaPrecio };
 
-                // Construcción de la entidad relacional con sus Foreign Keys
                 var nuevoPedido = new Pedido
                 {
                     Cliente = cliente,
@@ -58,13 +62,11 @@ namespace PizzeriaBackend.Controllers
                     }
                 };
 
-                // Guardado atómico en la base de datos MySQL
                 _db.Pedidos.Add(nuevoPedido);
                 await _db.SaveChangesAsync();
 
                 Console.WriteLine($"[WEB-MVC] Pedido #{nuevoPedido.Id} creado desde HTML. Enviando socket a Cocina...");
 
-                // 2. Disparo por Socket TCP hacia CocinaApp (puerto 5050)
                 try
                 {
                     using var tcpClient = new TcpClient("127.0.0.1", 5050);
@@ -79,13 +81,22 @@ namespace PizzeriaBackend.Controllers
                     await _db.SaveChangesAsync();
                 }
 
-                // Redirecciona a la vista de confirmación pasando el ID generado
                 return RedirectToAction(nameof(Confirmacion), new { id = nuevoPedido.Id });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR EN PEDIDO] {ex.Message}");
                 ModelState.AddModelError(string.Empty, "Ocurrió un fallo registrando el pedido en la base de datos.");
+
+                try
+                {
+                    ViewBag.Pizzas = await _db.Pizzas.OrderBy(p => p.Variedad).ToListAsync();
+                }
+                catch
+                {
+                    ViewBag.Pizzas = new List<Pizza>();
+                }
+
                 return View(dto);
             }
         }

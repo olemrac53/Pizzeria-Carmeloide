@@ -31,13 +31,29 @@
                     <input type="text" name="ClienteDireccion" class="form-control" placeholder="Ej: Av. Rivadavia 1234" required />
                 </div>
 
+                @{
+                    var pizzasMenu = ViewBag.Pizzas as List<PizzeriaBackend.Models.Pizza>
+                                      ?? new List<PizzeriaBackend.Models.Pizza>();
+                }
+
+                @if (!pizzasMenu.Any())
+                {
+                    <div class="alert alert-warning">
+                        Todavía no hay pizzas cargadas en el menú. Agregá alguna en la tabla
+                        <code>Pizzas</code> de la base de datos para poder hacer un pedido.
+                    </div>
+                }
+
                 <div class="mb-3">
                     <label class="form-label font-weight-bold">Variedad de Pizza</label>
-                    <select id="selectPizza" name="PizzaVariedad" class="form-select" required onchange="actualizarPrecio()">
-                        <option value="Muzzarella Grande" data-precio="8500">Muzzarella Grande - $8.500</option>
-                        <option value="Fugazzeta Rellena" data-precio="11000">Fugazzeta Rellena - $11.000</option>
-                        <option value="Napolitana Especial" data-precio="9800">Napolitana Especial - $9.800</option>
-                        <option value="Calabresa" data-precio="10500">Calabresa - $10.500</option>
+                    <select id="selectPizza" name="PizzaVariedad" class="form-select" required
+                            onchange="actualizarPrecio()" disabled="@(!pizzasMenu.Any())">
+                        @foreach (var pizza in pizzasMenu)
+                        {
+                            <option value="@pizza.Variedad" data-precio="@pizza.Precio.ToString("0.00")">
+                                @pizza.Variedad - $@pizza.Precio.ToString("N0")
+                            </option>
+                        }
                     </select>
                 </div>
 
@@ -48,12 +64,15 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label font-weight-bold">Precio Unitario ($)</label>
-                        <input type="number" step="0.01" id="inputPrecio" name="PizzaPrecio" class="form-control bg-light" value="8500" readonly required />
+                        <input type="number" step="0.01" id="inputPrecio" name="PizzaPrecio" class="form-control bg-light"
+                               value="@(pizzasMenu.Any() ? pizzasMenu.First().Precio.ToString("0.00") : "0")" readonly required />
                     </div>
                 </div>
 
                 <div class="d-grid gap-2 mt-3">
-                    <button type="submit" class="btn btn-danger btn-lg">Enviar Pedido a Cocina</button>
+                    <button type="submit" class="btn btn-danger btn-lg" disabled="@(!pizzasMenu.Any())">
+                        Enviar Pedido a Cocina
+                    </button>
                     <a href="/" class="btn btn-outline-secondary">Cancelar</a>
                 </div>
             </form>
