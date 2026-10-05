@@ -130,3 +130,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+//corregis que el cliente no pueda escribir la variedad de la pizza, hacer un landing lindo 
+//crear usuario
+//iniciar sesion usuario
