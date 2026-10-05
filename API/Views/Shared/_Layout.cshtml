@@ -17,15 +17,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Estilos propios del sidebar colapsable (solo del Layout, no de una vista) -->
+    <style>
+        #sidebarNav {
+            width: 220px;
+        }
+
+        @@media (max-width: 767.98px) {
+            #sidebarNav {
+                width: 100%;
+            }
+        }
+    </style>
+
     @* Cada vista puede agregar su propio <style> u otros <link> extra acá *@
     @RenderSection("Styles", required: false)
 </head>
-<body class="d-flex min-vh-100">
+<body class="d-flex flex-column flex-md-row min-vh-100">
 
-    <!-- Navbar compartida por todas las páginas -->
-    <nav class="p-3 text-white bg-dark" style="width: 220px;">
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index">Pizzería </a>
-        <hr>
+    <!-- Barra superior: SOLO aparece en mobile/tablet (d-md-none), trae el botón hamburguesa -->
+    <nav class="navbar navbar-dark bg-dark d-md-none" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Pizzería</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#sidebarNav" aria-controls="sidebarNav"
+                    aria-expanded="false" aria-label="Mostrar/ocultar menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Sidebar: en mobile arranca colapsado (clase "collapse") y se despliega con el botón de arriba.
+         En pantallas md+ "d-md-block" lo fuerza a mostrarse siempre, fijo, como antes. -->
+    <nav id="sidebarNav" class="collapse d-md-block p-3 text-white bg-dark" data-bs-theme="dark">
+        <a class="navbar-brand d-none d-md-inline-block" asp-controller="Home" asp-action="Index">Pizzería</a>
+        <hr class="d-none d-md-block">
         <ul class="nav nav-pills flex-column mb-auto gap-2">
             <li class="nav-item">
                 <a class="btn btn-outline-light btn-sm" asp-controller="Home" asp-action="Index">Menú</a>
