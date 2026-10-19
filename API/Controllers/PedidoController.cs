@@ -4,9 +4,11 @@ using PizzeriaBackend.Models;
 using PizzeriaBackend.Data;
 using System.Net.Sockets;
 using System.Text;
+using Microsoft.AspNetCore.Authorization; // <-- IMPORTANTE: Namespace para [Authorize]
 
 namespace PizzeriaBackend.Controllers
 {
+    [Authorize] // <-- BLOQUEA EL ACCESO: Exige que el usuario haya iniciado sesión con cookies
     public class PedidoController : Controller
     {
         private readonly PizzeriaDb _db;
@@ -20,8 +22,6 @@ namespace PizzeriaBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> Agregar()
         {
-            // Trae las pizzas reales cargadas en la tabla Pizzas de la base de datos,
-            // ordenadas por nombre, para llenar los <select> del formulario.
             var pizzas = await _db.Pizzas
                 .OrderBy(p => p.Variedad)
                 .ToListAsync();
@@ -32,7 +32,6 @@ namespace PizzeriaBackend.Controllers
         }
 
         // POST: /Pedido/Agregar (Procesa el formulario HTML y dispara sockets)
-        // Ahora recibe una LISTA de pizzas (model.Items), no una sola.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Agregar(PedidoFormViewModel model)
@@ -50,13 +49,9 @@ namespace PizzeriaBackend.Controllers
 
             try
             {
-                // Busca o crea el cliente
                 var cliente = await _db.Clientes.FirstOrDefaultAsync(c => c.Nombre == model.ClienteNombre)
                               ?? new Cliente { Nombre = model.ClienteNombre, Direccion = model.ClienteDireccion };
 
-                // Arma un DetallePedido por cada variedad elegida. El precio SIEMPRE
-                // se toma de la base de datos (nunca del navegador), para que nadie
-                // pueda mandar un precio manipulado desde el HTML.
                 var detalles = new List<DetallePedido>();
 
                 foreach (var item in model.Items)
@@ -73,7 +68,6 @@ namespace PizzeriaBackend.Controllers
                     detalles.Add(new DetallePedido { Pizza = pizza, Cantidad = item.Cantidad });
                 }
 
-                // Construcción de la entidad relacional con sus Foreign Keys
                 var nuevoPedido = new Pedido
                 {
                     Cliente = cliente,
@@ -83,13 +77,11 @@ namespace PizzeriaBackend.Controllers
                     Detalles = detalles
                 };
 
-                // Guardado atómico en la base de datos MySQL
                 _db.Pedidos.Add(nuevoPedido);
                 await _db.SaveChangesAsync();
 
                 Console.WriteLine($"[WEB-MVC] Pedido #{nuevoPedido.Id} creado desde HTML con {detalles.Count} tipo(s) de pizza. Enviando socket a Cocina...");
 
-                // Disparo por Socket TCP hacia CocinaApp (puerto 5050)
                 try
                 {
                     using var tcpClient = new TcpClient("127.0.0.1", 5050);
@@ -104,7 +96,6 @@ namespace PizzeriaBackend.Controllers
                     await _db.SaveChangesAsync();
                 }
 
-                // Redirecciona a la vista de confirmación pasando el ID generado
                 return RedirectToAction(nameof(Confirmacion), new { id = nuevoPedido.Id });
             }
             catch (Exception ex)

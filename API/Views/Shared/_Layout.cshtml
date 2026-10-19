@@ -49,17 +49,46 @@
 
     <!-- Sidebar: en mobile arranca colapsado (clase "collapse") y se despliega con el botón de arriba.
          En pantallas md+ "d-md-block" lo fuerza a mostrarse siempre, fijo, como antes. -->
-    <nav id="sidebarNav" class="collapse d-md-block p-3 text-white bg-dark" data-bs-theme="dark">
-        <a class="navbar-brand d-none d-md-inline-block" asp-controller="Home" asp-action="Index">Pizzería</a>
-        <hr class="d-none d-md-block">
-        <ul class="nav nav-pills flex-column mb-auto gap-2">
-            <li class="nav-item">
-                <a class="btn btn-outline-light btn-sm" asp-controller="Home" asp-action="Index">Menú</a>
-            </li>
-            <li>
-                <a class="btn btn-warning btn-sm" asp-controller="Pedido" asp-action="Agregar">Hacer Pedido</a>
-            </li>
-        </ul>
+    <nav id="sidebarNav" class="collapse d-md-block p-3 text-white bg-dark d-flex flex-column" data-bs-theme="dark">
+        <div>
+            <a class="navbar-brand d-none d-md-inline-block fw-bold" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-pizza text-danger me-1"></i> Pizzería
+            </a>
+            <hr class="d-none d-md-block">
+            <ul class="nav nav-pills flex-column mb-auto gap-2">
+                <li class="nav-item">
+                    <a class="btn btn-outline-light btn-sm w-100 text-start" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-house-door me-2"></i> Menú
+                    </a>
+                </li>
+                <li>
+                    <a class="btn btn-warning btn-sm w-100 text-start text-dark fw-bold" asp-controller="Pedido" asp-action="Agregar">
+                        <i class="bi bi-cart-plus me-2"></i> Hacer Pedido
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Sección de Autenticación en la parte inferior del Sidebar -->
+        <div class="mt-auto pt-3 border-top border-secondary">
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="mb-2 small text-truncate text-light">
+                    <i class="bi bi-person-circle text-success me-1"></i> <strong>@User.Identity.Name</strong>
+                </div>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                        <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a class="btn btn-outline-light btn-sm w-100" asp-controller="Account" asp-action="Login">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+                </a>
+            }
+        </div>
     </nav>
 
     <!-- Acá se inyecta el contenido específico de cada vista -->

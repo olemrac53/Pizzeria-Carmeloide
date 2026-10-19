@@ -18,26 +18,27 @@
 
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre del cliente</label>
-      <input type="text" id="nombre" class="form-control" value="Estudiante ET12">
+      <input type="text" id="nombre" class="form-control" value="Estudiante ET12" readonly>
     </div>
 
     <div class="mb-3">
       <label for="direccion" class="form-label">Dirección</label>
-      <input type="text" id="direccion" class="form-control" value="Av. Corrientes">
+      <input type="text" id="direccion" class="form-control" value="Av. Corrientes" readonly>
     </div>
 
     <div class="mb-3">
       <label for="variedad" class="form-label">Variedad de pizza</label>
-      <input type="text" id="variedad" class="form-control" value="Muzzarella Grande">
+      <input type="text" id="variedad" class="form-control" value="Muzzarella Grande" readonly>
     </div>
 
     <div class="mb-3">
       <label for="precio" class="form-label">Precio</label>
-      <input type="number" id="precio" class="form-control" value="8500" step="0.01" min="0.01">
+      <input type="number" id="precio" class="form-control" value="8500" step="0.01" min="0.01" readonly>
     </div>
 
     <div class="mb-3">
       <label for="cantidad" class="form-label">Cantidad</label>
+      <!-- La cantidad se mantiene editable para que el usuario pueda pedir más de 1 unidad -->
       <input type="number" id="cantidad" class="form-control" value="1" min="1">
     </div>
 
@@ -52,13 +53,11 @@
 
     const URL_API = "http://localhost:5180/pedidos";
 
-
     document.getElementById("btnPedir").addEventListener("click", hacerPedido);
 
     async function hacerPedido() {
       const resultadoDiv = document.getElementById("resultado");
       resultadoDiv.textContent = "Enviando pedido...";
-
     
       const pedido = {
         ClienteNombre: document.getElementById("nombre").value,
@@ -69,14 +68,12 @@
       };
 
       try {
-       
         const respuesta = await fetch(URL_API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(pedido)
         });
 
-       
         const texto = await respuesta.text();
 
         if (respuesta.ok) {
@@ -85,7 +82,6 @@
           resultadoDiv.textContent = "El servidor rechazó el pedido (" + respuesta.status + ")\n" + texto;
         }
       } catch (error) {
-     
         resultadoDiv.textContent = "Error de red: no se pudo contactar a la API.\n" + error.message;
       }
     }
