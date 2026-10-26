@@ -4,7 +4,7 @@ using PizzeriaBackend.Models;
 using PizzeriaBackend.Data;
 using System.Net.Sockets;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.Cookies; // <-- IMPORTANTE: Namespace para cookies
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +15,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login"; // Redirige aquí si el usuario no está logueado
-        options.ExpireTimeSpan = TimeSpan.FromHours(8); // Tiempo de expiración de la sesión
+        options.LoginPath = "/Account/Login";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
     });
 
-// CONFIGURACIÓN DE LA BASE DE DATOS (Abstracción)
+// CONFIGURACIÓN DE LA BASE DE DATOS
 var connectionString = "Server=localhost;Database=5to_PizzeriaDB;User=5to_agbd;Password=Trigg3rs!;";
 
 builder.Services.AddDbContext<PizzeriaDb>(options => 
@@ -38,16 +38,16 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-// 2. MIDDLEWARES NECESARIOS PARA MVC Y SEGURIDAD
+// 2. MIDDLEWARES NECESARIOS (IMPORTANTE: UseStaticFiles habilita la carpeta wwwroot)
 app.UseStaticFiles(); 
 app.UseRouting();     
 
-// ORDEN CRUCIAL: Authentication debe ir antes de Authorization
+// AUTENTICACIÓN Y AUTORIZACIÓN
 app.UseAuthentication(); 
 app.UseAuthorization(); 
 
 // ----------------------------------------------------------------------
-// TUS ENDPOINTS DE API MINIMAL Y SOCKETS 
+// ENDPOINTS DE API MINIMAL Y SOCKETS
 // ----------------------------------------------------------------------
 app.MapGet("/pedidos", async (PizzeriaDb db) => 
     await db.Pedidos.Where(p => p.Activo).ToListAsync()

@@ -1,89 +1,195 @@
-@section Styles {
-  <style>
-    #resultado {
-      margin-top: 20px;
-      white-space: pre-wrap;
-      border: 1px solid #ccc;
-      padding: 10px;
-    }
-  </style>
+@{
+    ViewData["Title"] = "Amore a prima pizza";
 }
 
-  <div class="container py-4" style="max-width: 480px;">
+@section Styles {
+    <style>
+        /* Estilos generales inspirados en la estética de las imágenes */
+        .pizzeria-hero {
+            background-color: #c83b1d; /* Tono rojo/terracota característico */
+            color: #ffffff;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-    <img src="https://img.magnific.com/fotos-premium/pizza-italiana-lista-verduras-frescas-sobre-fondo-madera_736061-566.jpg?semt=ais_hybrid&w=740&q=80"
-         class="img-fluid rounded mb-4" alt="Imagen de una pizza">
+        /* Tipografía simulada estilo tiza/casual para los títulos */
+        .title-script {
+            font-family: 'Brush Script MT', cursive, sans-serif;
+            letter-spacing: 2px;
+        }
 
-    <h2 class="mb-4">Hacer un pedido</h2>
+        /* Tarjetas de pizzas interactivas */
+        .pizza-card {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            border: 2px solid transparent;
+        }
 
-    <div class="mb-3">
-      <label for="nombre" class="form-label">Nombre del cliente</label>
-      <input type="text" id="nombre" class="form-control" value="Estudiante ET12" readonly>
+        .pizza-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffc107;
+        }
+
+        .pizza-img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .pizza-card:hover .pizza-img {
+            transform: scale(1.05);
+        }
+
+        /* Contenedor desplegable de ingredientes */
+        .ingredientes-box {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease;
+            background-color: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #f8f9fa;
+            padding: 0 10px;
+        }
+
+        .pizza-card.active .ingredientes-box {
+            max-height: 150px;
+            padding: 10px;
+            transition: max-height 0.4s ease-in, padding 0.4s ease;
+        }
+
+        /* Banner superior / inferior estilo menú */
+        .badge-custom {
+            background-color: #ffc107;
+            color: #000;
+            font-weight: bold;
+        }
+    </style>
+}
+
+<div class="pizzeria-hero container-fluid py-5 px-3 px-md-5">
+
+    <!-- SECCIÓN 1: Inspirada en la Imagen 1 (Portada / Hero Principal) -->
+    <div class="row align-items-center mb-5 pb-5 border-bottom border-light border-opacity-25">
+        <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
+            <span class="badge badge-custom px-3 py-2 rounded-pill mb-3 text-uppercase tracking-wider">
+                <i class="bi bi-truck me-1"></span> Free Delivery
+            </span>
+            <h1 class="display-3 fw-bold title-script text-warning mb-2">Amore a prima pizza</h1>
+            <p class="lead fs-4 text-light opacity-90">Las auténticas italianas pizzas artesanales hechas con pasión.</p>
+            <div class="mt-4">
+                <a asp-controller="Pedido" asp-action="Agregar" class="btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill shadow">
+                    <i class="bi bi-basket-fill me-2"></i> Hacer un Orden
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-5 text-center">
+            <div class="position-relative d-inline-block">
+                <img src="https://img.magnific.com/fotos-premium/pizza-italiana-lista-verduras-frescas-sobre-fondo-madera_736061-566.jpg?semt=ais_hybrid&w=740&q=80" 
+                     class="img-fluid rounded-4 shadow-lg" alt="Pizza destacada" style="max-height: 320px; border: 5px solid rgba(255,255,255,0.2);">
+            </div>
+        </div>
     </div>
 
-    <div class="mb-3">
-      <label for="direccion" class="form-label">Dirección</label>
-      <input type="text" id="direccion" class="form-control" value="Av. Corrientes" readonly>
+    <!-- SECCIÓN 2: Inspirada en la Imagen 2 (Nuestras Deliciosas Italianas Pizzas + Interactividad) -->
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold title-script text-warning">Nuestras Deliciosas</h2>
+        <h3 class="text-uppercase fw-bold tracking-wide text-white mb-2" style="letter-spacing: 3px;">Italianas Pizzas</h3>
+        <p class="text-light small">Hacé clic en cualquier pizza para ver sus ingredientes frescos</p>
     </div>
 
-    <div class="mb-3">
-      <label for="variedad" class="form-label">Variedad de pizza</label>
-      <input type="text" id="variedad" class="form-control" value="Muzzarella Grande" readonly>
+    <!-- Grilla de Pizzas Interactivas -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 text-center">
+
+        <!-- 1. Mozzarella -->
+        <div class="col">
+            <div class="pizza-card h-100" onclick="toggleIngredientes(this)">
+                <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&auto=format&fit=crop&q=60" class="pizza-img mb-3" alt="Mozzarella Pizza">
+                <h5 class="fw-bold text-white mb-1">Mozzarella Pizza</h5>
+                <p class="text-warning fw-semibold mb-0">$8.500</p>
+                <div class="ingredientes-box text-start">
+                    <strong>Ingredientes:</strong> Salsa de tomate natural, doble capa de mozzarella fundida y orégano fresco de huerta.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Pepperoni -->
+        <div class="col">
+            <div class="pizza-card h-100" onclick="toggleIngredientes(this)">
+                <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&auto=format&fit=crop&q=60" class="pizza-img mb-3" alt="Pepperoni Pizza">
+                <h5 class="fw-bold text-white mb-1">Pepperoni Pizza</h5>
+                <p class="text-warning fw-semibold mb-0">$9.200</p>
+                <div class="ingredientes-box text-start">
+                    <strong>Ingredientes:</strong> Mozzarella fundida, rodajas generosas de pepperoni italiano picante y un toque de aceite de oliva.
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Napolitana Rellena -->
+        <div class="col">
+            <div class="pizza-card h-100" onclick="toggleIngredientes(this)">
+                <img src="https://images.unsplash.com/photo-1595730248270-496317bc2d44?w=500&auto=format&fit=crop&q=60" class="pizza-img mb-3" alt="Napolitana Rellena">
+                <h5 class="fw-bold text-white mb-1">Napolitana Rellena</h5>
+                <p class="text-warning fw-semibold mb-0">$10.500</p>
+                <div class="ingredientes-box text-start">
+                    <strong>Ingredientes:</strong> Jamón crudo, rúcula fresca, tomates cherry seleccionados y lascas de queso parmesano.
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Capresse -->
+        <div class="col">
+            <div class="pizza-card h-100" onclick="toggleIngredientes(this)">
+                <img src="https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=500&auto=format&fit=crop&q=60" class="pizza-img mb-3" alt="Capresse Pizza">
+                <h5 class="fw-bold text-white mb-1">Capresse Pizza</h5>
+                <p class="text-warning fw-semibold mb-0">$9.800</p>
+                <div class="ingredientes-box text-start">
+                    <strong>Ingredientes:</strong> Rodajas de mozzarella fior di latte, tomates en rodajas, albahaca fresca y emulsión de pesto.
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="mb-3">
-      <label for="precio" class="form-label">Precio</label>
-      <input type="number" id="precio" class="form-control" value="8500" step="0.01" min="0.01" readonly>
+    <!-- Pie de página informativo con la dirección -->
+    <div class="row mt-5 pt-4 border-top border-light border-opacity-25 align-items-center">
+        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                <div class="bg-dark text-white rounded-circle p-2 me-2 d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px;">
+                    <i class="bi bi-geo-alt-fill text-danger"></i>
+                </div>
+                <span class="fw-bold fs-5">Av. Rivadavia 123</span>
+            </div>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+            <span class="text-light opacity-75 small">Página N° 1 - Sistema de Pedidos Oficial</span>
+        </div>
     </div>
 
-    <div class="mb-3">
-      <label for="cantidad" class="form-label">Cantidad</label>
-      <!-- La cantidad se mantiene editable para que el usuario pueda pedir más de 1 unidad -->
-      <input type="number" id="cantidad" class="form-control" value="1" min="1">
-    </div>
-
-    <button id="btnPedir" class="btn btn-danger w-100">Hacer pedido</button>
-
-    <div id="resultado"></div>
-
-  </div>
+</div>
 
 @section Scripts {
-  <script>
+    <script>
+        // Función de JavaScript para desplegar u ocultar los ingredientes al hacer clic en la tarjeta
+        function toggleIngredientes(cardElement) {
+            // Opcional: Si querés que solo una esté abierta a la vez, descomentá las líneas de abajo:
+            // document.querySelectorAll('.pizza-card').forEach(c => {
+            //     if (c !== cardElement) c.classList.remove('active');
+            // });
 
-    const URL_API = "http://localhost:5180/pedidos";
-
-    document.getElementById("btnPedir").addEventListener("click", hacerPedido);
-
-    async function hacerPedido() {
-      const resultadoDiv = document.getElementById("resultado");
-      resultadoDiv.textContent = "Enviando pedido...";
-    
-      const pedido = {
-        ClienteNombre: document.getElementById("nombre").value,
-        ClienteDireccion: document.getElementById("direccion").value,
-        PizzaVariedad: document.getElementById("variedad").value,
-        PizzaPrecio: parseFloat(document.getElementById("precio").value),
-        Cantidad: parseInt(document.getElementById("cantidad").value, 10)
-      };
-
-      try {
-        const respuesta = await fetch(URL_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(pedido)
-        });
-
-        const texto = await respuesta.text();
-
-        if (respuesta.ok) {
-          resultadoDiv.textContent = "¡Pedido recibido!\n" + texto;
-        } else {
-          resultadoDiv.textContent = "El servidor rechazó el pedido (" + respuesta.status + ")\n" + texto;
+            // Alterna la clase active para desplegar con CSS transition
+            cardElement.classList.toggle('active');
         }
-      } catch (error) {
-        resultadoDiv.textContent = "Error de red: no se pudo contactar a la API.\n" + error.message;
-      }
-    }
-  </script>
+    </script>
 }
