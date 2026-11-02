@@ -1,195 +1,265 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-    ViewData["Title"] = "Amore a prima pizza";
+    ViewData["Title"] = "Inicio";
 }
 
 @section Styles {
-    <style>
-        /* Estilos generales inspirados en la estética de las imágenes */
-        .pizzeria-hero {
-            background-color: #c83b1d; /* Tono rojo/terracota característico */
-            color: #ffffff;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            position: relative;
-            overflow-x: hidden;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&family=Bebas+Neue&family=Gochi+Hand&family=Poppins:wght@@500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --rojo: #c4270d;
+        --rojo-oscuro: #a81f08;
+        --amarillo: #f2b827;
+        --crema: #f6e7c5;
+    }
 
-        /* Tipografía simulada estilo tiza/casual para los títulos */
-        .title-script {
-            font-family: 'Brush Script MT', cursive, sans-serif;
-            letter-spacing: 2px;
-        }
+    /* Anula el padding del <main> del Layout para que el diseño ocupe todo el ancho */
+    .inicio { margin: -1.5rem; }
 
-        /* Tarjetas de pizzas interactivas */
-        .pizza-card {
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 15px;
-            border: 2px solid transparent;
-        }
+    .pantalla {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--rojo);
+        background-image:
+            radial-gradient(circle at 15% 25%, rgba(255,255,255,.07) 0 60px, transparent 61px),
+            radial-gradient(circle at 85% 70%, rgba(255,255,255,.07) 0 80px, transparent 81px),
+            radial-gradient(circle at 50% 95%, rgba(255,255,255,.06) 0 70px, transparent 71px);
+        color: #fff;
+    }
 
-        .pizza-card:hover {
-            transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #ffc107;
-        }
+    /* ---------- Pizza dibujada con CSS (se reemplaza sola si hay foto en /images) ---------- */
+    .disco {
+        position: relative;
+        width: var(--d, 150px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 8px 18px rgba(0,0,0,.35);
+        background:
+            radial-gradient(circle at 30% 30%, var(--t1, #d9381e) 0 7%, transparent 8%),
+            radial-gradient(circle at 68% 28%, var(--t1, #d9381e) 0 7%, transparent 8%),
+            radial-gradient(circle at 50% 55%, var(--t1, #d9381e) 0 8%, transparent 9%),
+            radial-gradient(circle at 28% 70%, var(--t2, #4f8a2e) 0 6%, transparent 7%),
+            radial-gradient(circle at 72% 72%, var(--t2, #4f8a2e) 0 6%, transparent 7%),
+            radial-gradient(circle, var(--queso, #f3c969) 0 62%, #e0a43f 63% 78%, #c98a2b 79% 100%);
+    }
+    /* Si existe la foto, se dibuja encima; si no existe, simplemente no se ve */
+    .disco::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: var(--foto) center / cover no-repeat;
+    }
+    .disco.mozzarella  { --t1: #f7ecd0; --t2: #f1dca4; --queso: #f6e3a8; }
+    .disco.pepperoni   { --t1: #b3201a; --t2: #b3201a; --queso: #f0b84f; }
+    .disco.napolitana  { --t1: #e9a5a0; --t2: #4f8a2e; --queso: #f3d27c; }
+    .disco.caprese     { --t1: #d9381e; --t2: #3f7d2b; --queso: #f6e6b0; }
 
-        .pizza-img {
-            width: 160px;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 4px solid #fff;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-        }
+    /* ---------- PANTALLA 1: portada ---------- */
+    .portada { min-height: 540px; padding-bottom: 70px; display: flex; align-items: center; justify-content: center; }
+    .portada .titulo {
+        font-family: 'Sacramento', cursive;
+        color: #111;
+        font-size: clamp(3.2rem, 9vw, 7rem);
+        line-height: 1.05;
+        margin: 0;
+        position: relative;
+        z-index: 2;
+    }
+    .portada .deco { position: absolute; z-index: 1; }
+    .deco.a { --d: 170px; top: 40px;  right: 150px; }
+    .deco.b { --d: 160px; top: 130px; right: -30px; }
+    .deco.c { --d: 150px; top: 250px; right: 60px; }
+    .deco.d { --d: 180px; bottom: 40px; right: -20px; }
+    .deco.e { --d: 140px; bottom: 30px; left: -40px; }
+    .etiqueta-pizza {
+        position: absolute; top: 0; right: 0; z-index: 3;
+        background: var(--amarillo); color: var(--rojo-oscuro);
+        font-family: 'Poppins', sans-serif; font-weight: 700;
+        padding: 14px 40px 60px 20px;
+    }
 
-        .pizza-card:hover .pizza-img {
-            transform: scale(1.05);
-        }
+    .barra-crema {
+        position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+        background: var(--crema); color: var(--rojo-oscuro);
+        font-family: 'Poppins', sans-serif; font-weight: 700;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 24px;
+    }
+    .barra-crema a, .link-orden { color: inherit; text-decoration: none; }
+    .barra-crema a:hover { text-decoration: underline; }
 
-        /* Contenedor desplegable de ingredientes */
-        .ingredientes-box {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, padding 0.4s ease;
-            background-color: rgba(0, 0, 0, 0.25);
-            border-radius: 8px;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #f8f9fa;
-            padding: 0 10px;
-        }
+    /* ---------- PANTALLA 2: menú ---------- */
+    .menu-pizzas { padding: 24px 0 24px; }
+    .cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+    .pildora {
+        background: var(--amarillo); color: var(--rojo-oscuro);
+        font-family: 'Poppins', sans-serif; font-weight: 700; font-size: .85rem;
+        padding: 18px 32px; border-radius: 0 40px 40px 0;
+    }
+    .pildora.der { border-radius: 40px 0 0 40px; }
+    .titulo-menu { text-align: center; flex: 1; min-width: 260px; }
+    .titulo-menu .nuestras { font-family: 'Gochi Hand', cursive; color: var(--amarillo); font-size: 2rem; display: block; transform: rotate(-6deg); }
+    .titulo-menu .deliciosas { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 8vw, 5.5rem); line-height: .9; display: block; transform: rotate(-4deg); text-shadow: 3px 3px 0 rgba(0,0,0,.18); }
+    .titulo-menu .italianas { font-family: 'Gochi Hand', cursive; color: var(--amarillo); font-size: 1.7rem; display: block; transform: rotate(-4deg); }
 
-        .pizza-card.active .ingredientes-box {
-            max-height: 150px;
-            padding: 10px;
-            transition: max-height 0.4s ease-in, padding 0.4s ease;
-        }
+    .fila-pizzas { display: flex; justify-content: center; flex-wrap: wrap; gap: 28px; margin: 28px 12px 10px; }
+    .pizza-btn {
+        background: none; border: 0; color: #fff; cursor: pointer;
+        display: flex; flex-direction: column; align-items: center; gap: 10px;
+        padding: 6px; border-radius: 16px; transition: transform .2s;
+    }
+    .pizza-btn:hover { transform: translateY(-4px) scale(1.03); }
+    .pizza-btn:focus-visible { outline: 3px solid var(--amarillo); }
+    .pizza-btn .nombre { font-family: 'Gochi Hand', cursive; font-size: 1.35rem; line-height: 1.1; max-width: 160px; }
+    .pizza-btn.activa .disco { outline: 5px solid var(--amarillo); outline-offset: 4px; }
 
-        /* Banner superior / inferior estilo menú */
-        .badge-custom {
-            background-color: #ffc107;
-            color: #000;
-            font-weight: bold;
-        }
-    </style>
+    /* Panel desplegable: se abre con una transición suave */
+    .panel-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+    .panel-wrap.abierto { grid-template-rows: 1fr; }
+    .panel-wrap > div { overflow: hidden; }
+    .panel-pizza {
+        background: var(--crema); color: #3a2a1a;
+        max-width: 640px; margin: 14px auto 6px; padding: 18px 22px;
+        border-radius: 18px; text-align: left;
+        box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    }
+    .panel-pizza h3 { font-family: 'Gochi Hand', cursive; color: var(--rojo-oscuro); margin: 0 0 6px; font-size: 1.7rem; }
+    .panel-pizza p { margin: 0 0 12px; font-family: 'Poppins', sans-serif; font-size: .95rem; }
+
+    .pie-menu { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px 4px; font-family: 'Poppins', sans-serif; font-weight: 700; }
+    .pin { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: #1b1b1b; color: #fff; margin-right: 12px; }
+
+    @@media (max-width: 767.98px) {
+        .inicio { margin: -1.5rem -1.5rem; }
+        .deco.a, .deco.c { display: none; }
+        .deco.b { --d: 110px; top: 20px; right: -30px; }
+        .deco.d { --d: 120px; }
+        .deco.e { --d: 100px; }
+        .pildora { padding: 12px 18px; font-size: .75rem; }
+        .pie-menu, .barra-crema { font-size: .8rem; padding-left: 14px; padding-right: 14px; }
+    }
+</style>
 }
 
-<div class="pizzeria-hero container-fluid py-5 px-3 px-md-5">
+<div class="inicio">
 
-    <!-- SECCIÓN 1: Inspirada en la Imagen 1 (Portada / Hero Principal) -->
-    <div class="row align-items-center mb-5 pb-5 border-bottom border-light border-opacity-25">
-        <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
-            <span class="badge badge-custom px-3 py-2 rounded-pill mb-3 text-uppercase tracking-wider">
-                <i class="bi bi-truck me-1"></span> Free Delivery
+    <!-- ===================== PANTALLA 1: PORTADA ===================== -->
+    <section class="pantalla portada">
+        <div class="etiqueta-pizza">🍕 Pizza</div>
+
+        <h1 class="titulo">Amore a<br />prima pizza</h1>
+
+        <span class="disco deco a pepperoni" style="--foto:url('/images/pepperoni.png')"></span>
+        <span class="disco deco b caprese" style="--foto:url('/images/caprese.png')"></span>
+        <span class="disco deco c napolitana" style="--foto:url('/images/napolitana.png')"></span>
+        <span class="disco deco d pepperoni" style="--foto:url('/images/pepperoni.png')"></span>
+        <span class="disco deco e napolitana" style="--foto:url('/images/napolitana.png')"></span>
+
+        <div class="barra-crema">
+            <a asp-controller="Pedido" asp-action="Agregar">Orden</a>
+            <span>Av. Rivadavia 123</span>
+            <span></span>
+        </div>
+    </section>
+
+    <!-- ===================== PANTALLA 2: MENÚ ===================== -->
+    <section class="pantalla menu-pizzas">
+        <div class="cabecera">
+            <div class="pildora">🛵 FREE DELIVERY</div>
+
+            <div class="titulo-menu">
+                <span class="nuestras">Nuestras</span>
+                <span class="deliciosas">DELICIOSAS</span>
+                <span class="italianas">italianas pizzas</span>
+            </div>
+
+            <div class="pildora der">PAGINA N° 1</div>
+        </div>
+
+        <div class="fila-pizzas" id="filaPizzas">
+            <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-nombre="Mozzarella Pizza"
+                    data-desc="Salsa de tomate casera, abundante muzzarella derretida y un toque de orégano. La clásica de siempre.">
+                <span class="disco mozzarella" style="--foto:url('/images/mozzarella.png')"></span>
+                <span class="nombre">Mozzarella Pizza</span>
+            </button>
+
+            <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-nombre="Pepperoni Pizza"
+                    data-desc="Salsa de tomate, muzzarella y rodajas de pepperoni picante, horneadas hasta quedar crocantes en los bordes.">
+                <span class="disco pepperoni" style="--foto:url('/images/pepperoni.png')"></span>
+                <span class="nombre">Pepperoni Pizza</span>
+            </button>
+
+            <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-nombre="Napolitana rellena Pizza"
+                    data-desc="Rellena de muzzarella y jamón, con rodajas de tomate, rúcula fresca y un hilo de aceite de oliva.">
+                <span class="disco napolitana" style="--foto:url('/images/napolitana.png')"></span>
+                <span class="nombre">Napolitana rellena Pizza</span>
+            </button>
+
+            <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-nombre="Capresse Pizza"
+                    data-desc="Muzzarella, tomate fresco, hojas de albahaca y aceite de oliva. Liviana y muy aromática.">
+                <span class="disco caprese" style="--foto:url('/images/caprese.png')"></span>
+                <span class="nombre">Capresse Pizza</span>
+            </button>
+        </div>
+
+        <!-- Acá se despliega la descripción de la pizza elegida -->
+        <div class="panel-wrap" id="panelWrap" aria-live="polite">
+            <div>
+                <div class="panel-pizza">
+                    <h3 id="panelTitulo"></h3>
+                    <p id="panelTexto"></p>
+                    <a class="btn btn-danger btn-sm" asp-controller="Pedido" asp-action="Agregar">Pedir esta pizza</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="pie-menu">
+            <span class="d-flex align-items-center">
+                <span class="pin"><i class="bi bi-geo-alt-fill"></i></span>
+                AV. RIVADAVIA 123
             </span>
-            <h1 class="display-3 fw-bold title-script text-warning mb-2">Amore a prima pizza</h1>
-            <p class="lead fs-4 text-light opacity-90">Las auténticas italianas pizzas artesanales hechas con pasión.</p>
-            <div class="mt-4">
-                <a asp-controller="Pedido" asp-action="Agregar" class="btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill shadow">
-                    <i class="bi bi-basket-fill me-2"></i> Hacer un Orden
-                </a>
-            </div>
+            <a class="link-orden" asp-controller="Pedido" asp-action="Agregar">Orden</a>
         </div>
-        <div class="col-lg-5 text-center">
-            <div class="position-relative d-inline-block">
-                <img src="https://img.magnific.com/fotos-premium/pizza-italiana-lista-verduras-frescas-sobre-fondo-madera_736061-566.jpg?semt=ais_hybrid&w=740&q=80" 
-                     class="img-fluid rounded-4 shadow-lg" alt="Pizza destacada" style="max-height: 320px; border: 5px solid rgba(255,255,255,0.2);">
-            </div>
-        </div>
-    </div>
-
-    <!-- SECCIÓN 2: Inspirada en la Imagen 2 (Nuestras Deliciosas Italianas Pizzas + Interactividad) -->
-    <div class="text-center mb-5">
-        <h2 class="display-5 fw-bold title-script text-warning">Nuestras Deliciosas</h2>
-        <h3 class="text-uppercase fw-bold tracking-wide text-white mb-2" style="letter-spacing: 3px;">Italianas Pizzas</h3>
-        <p class="text-light small">Hacé clic en cualquier pizza para ver sus ingredientes frescos</p>
-    </div>
-
-    <!-- Grilla de Pizzas Interactivas -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 text-center">
-
-        <!-- 1. Mozzarella -->
-        <div class="col">
-            <div class="pizza-card h-100" onclick="toggleIngredientes(this)">
-                <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&auto=format&fit=crop&q=60" class="pizza-img mb-3" alt="Mozzarella Pizza">
-                <h5 class="fw-bold text-white mb-1">Mozzarella Pizza</h5>
-                <p class="text-warning fw-semibold mb-0">$8.500</p>
-                <div class="ingredientes-box text-start">
-                    <strong>Ingredientes:</strong> Salsa de tomate natural, doble capa de mozzarella fundida y orégano fresco de huerta.
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. Pepperoni -->
-        <div class="col">
-            <div class="pizza-card h-100" onclick="toggleIngredientes(this)">
-                <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&auto=format&fit=crop&q=60" class="pizza-img mb-3" alt="Pepperoni Pizza">
-                <h5 class="fw-bold text-white mb-1">Pepperoni Pizza</h5>
-                <p class="text-warning fw-semibold mb-0">$9.200</p>
-                <div class="ingredientes-box text-start">
-                    <strong>Ingredientes:</strong> Mozzarella fundida, rodajas generosas de pepperoni italiano picante y un toque de aceite de oliva.
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. Napolitana Rellena -->
-        <div class="col">
-            <div class="pizza-card h-100" onclick="toggleIngredientes(this)">
-                <img src="https://images.unsplash.com/photo-1595730248270-496317bc2d44?w=500&auto=format&fit=crop&q=60" class="pizza-img mb-3" alt="Napolitana Rellena">
-                <h5 class="fw-bold text-white mb-1">Napolitana Rellena</h5>
-                <p class="text-warning fw-semibold mb-0">$10.500</p>
-                <div class="ingredientes-box text-start">
-                    <strong>Ingredientes:</strong> Jamón crudo, rúcula fresca, tomates cherry seleccionados y lascas de queso parmesano.
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. Capresse -->
-        <div class="col">
-            <div class="pizza-card h-100" onclick="toggleIngredientes(this)">
-                <img src="https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=500&auto=format&fit=crop&q=60" class="pizza-img mb-3" alt="Capresse Pizza">
-                <h5 class="fw-bold text-white mb-1">Capresse Pizza</h5>
-                <p class="text-warning fw-semibold mb-0">$9.800</p>
-                <div class="ingredientes-box text-start">
-                    <strong>Ingredientes:</strong> Rodajas de mozzarella fior di latte, tomates en rodajas, albahaca fresca y emulsión de pesto.
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Pie de página informativo con la dirección -->
-    <div class="row mt-5 pt-4 border-top border-light border-opacity-25 align-items-center">
-        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-            <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-                <div class="bg-dark text-white rounded-circle p-2 me-2 d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px;">
-                    <i class="bi bi-geo-alt-fill text-danger"></i>
-                </div>
-                <span class="fw-bold fs-5">Av. Rivadavia 123</span>
-            </div>
-        </div>
-        <div class="col-md-6 text-center text-md-end">
-            <span class="text-light opacity-75 small">Página N° 1 - Sistema de Pedidos Oficial</span>
-        </div>
-    </div>
+    </section>
 
 </div>
 
 @section Scripts {
-    <script>
-        // Función de JavaScript para desplegar u ocultar los ingredientes al hacer clic en la tarjeta
-        function toggleIngredientes(cardElement) {
-            // Opcional: Si querés que solo una esté abierta a la vez, descomentá las líneas de abajo:
-            // document.querySelectorAll('.pizza-card').forEach(c => {
-            //     if (c !== cardElement) c.classList.remove('active');
-            // });
+<script>
+    const botones = document.querySelectorAll('.pizza-btn');
+    const panelWrap = document.getElementById('panelWrap');
+    const panelTitulo = document.getElementById('panelTitulo');
+    const panelTexto = document.getElementById('panelTexto');
 
-            // Alterna la clase active para desplegar con CSS transition
-            cardElement.classList.toggle('active');
-        }
-    </script>
+    botones.forEach(boton => {
+        boton.addEventListener('click', () => {
+            const yaEstabaActiva = boton.classList.contains('activa');
+
+            // Cierra/desmarca todas
+            botones.forEach(b => {
+                b.classList.remove('activa');
+                b.setAttribute('aria-expanded', 'false');
+            });
+
+            // Si tocó la misma pizza otra vez, solo se cierra el panel
+            if (yaEstabaActiva) {
+                panelWrap.classList.remove('abierto');
+                return;
+            }
+
+            // Si no, muestra la descripción de la pizza elegida
+            boton.classList.add('activa');
+            boton.setAttribute('aria-expanded', 'true');
+            panelTitulo.textContent = boton.dataset.nombre;
+            panelTexto.textContent = boton.dataset.desc;
+            panelWrap.classList.add('abierto');
+        });
+    });
+</script>
 }

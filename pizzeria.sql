@@ -46,3 +46,22 @@ CREATE TABLE DetallesPedido (
     FOREIGN KEY (PedidoId) REFERENCES Pedidos(Id) ON DELETE CASCADE,
     FOREIGN KEY (PizzaId) REFERENCES Pizzas(Id) ON DELETE CASCADE
 );
+
+-- 1. Vaciar todos los registros de la tabla
+TRUNCATE TABLE Pizzas;
+
+-- 2. Cargar los datos de nuevo
+INSERT INTO Pizzas (Variedad, Precio) VALUES
+('Muzzarella Grande', 8500.00),
+('Fugazzeta Rellena', 11000.00),
+('Napolitana Especial', 9800.00),
+('Calabresa', 10500.00);
+
+-- 1. Desactivar el modo seguro temporalmente
+SET SQL_SAFE_UPDATES = 0;
+
+-- 2. Ejecutar tu sentencia DELETE
+DELETE FROM Pizzas WHERE Variedad = 'Calabresa';
+
+-- 3. (Opcional pero recomendado) Volver a activarlo por seguridad
+SET SQL_SAFE_UPDATES = 1;
