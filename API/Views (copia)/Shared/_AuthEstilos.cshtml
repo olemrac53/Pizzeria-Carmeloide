@@ -1,0 +1,117 @@
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&family=Poppins:wght@@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --rojo: #c4270d;
+        --rojo-oscuro: #a81f08;
+        --amarillo: #f2b827;
+        --crema: #f6e7c5;
+    }
+
+    /* Fondo crema que ocupa todo el <main> del Layout (anula su padding) */
+    .auth-pagina {
+        margin: -1.5rem;
+        padding: 2rem 1rem;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--crema);
+        background-image:
+            radial-gradient(circle at 10% 15%, rgba(196,39,13,.10) 0 90px, transparent 91px),
+            radial-gradient(circle at 90% 85%, rgba(242,184,39,.35) 0 110px, transparent 111px);
+    }
+
+    .auth-card {
+        display: flex;
+        width: 100%;
+        max-width: 920px;
+        min-height: 540px;
+        background: #fff;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(120,20,5,.30);
+        text-align: left;
+    }
+
+    /* ---- Lado rojo con pizzas ---- */
+    .auth-lado {
+        flex: 0 0 42%;
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+        padding: 40px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: var(--rojo);
+        background-image:
+            radial-gradient(circle at 20% 15%, rgba(255,255,255,.10) 0 70px, transparent 71px),
+            radial-gradient(circle at 85% 90%, rgba(255,255,255,.08) 0 90px, transparent 91px);
+    }
+    .auth-lado .marca { font-family: 'Sacramento', cursive; font-size: 3.4rem; line-height: 1; margin: 0; position: relative; z-index: 2; }
+    .auth-lado p { position: relative; z-index: 2; opacity: .92; font-size: .95rem; margin: .7rem 0 0; }
+
+    /* Pizza dibujada con CSS; si existe la foto en /images, se muestra encima */
+    .auth-pizza {
+        position: absolute;
+        width: var(--d, 130px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        box-shadow: 0 8px 18px rgba(0,0,0,.35);
+        background: radial-gradient(circle, #f3c969 0 62%, #e0a43f 63% 78%, #c98a2b 79% 100%);
+    }
+    .auth-pizza::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: var(--foto) center / cover no-repeat;
+    }
+    .auth-pizza.p1 { --d: 160px; bottom: -45px; left: -45px; }
+    .auth-pizza.p2 { --d: 120px; top: -35px; right: -35px; }
+    .auth-pizza.p3 { --d: 95px;  bottom: 55px; right: -25px; }
+
+    /* ---- Lado del formulario ---- */
+    .auth-form { flex: 1 1 58%; padding: 44px 40px; display: flex; flex-direction: column; justify-content: center; }
+    .auth-icono {
+        width: 56px; height: 56px; border-radius: 50%;
+        background: var(--rojo); color: #fff; font-size: 1.6rem;
+        display: inline-flex; align-items: center; justify-content: center;
+        box-shadow: 0 6px 14px rgba(196,39,13,.4);
+        margin-bottom: 14px;
+    }
+    .auth-form h1 { font-size: 1.7rem; font-weight: 700; color: #2b1b12; margin: 0 0 4px; }
+    .auth-form .sub { color: #7a6a5e; font-size: .9rem; margin-bottom: 22px; }
+
+    .auth-form .form-control { border-radius: 12px; border: 1.5px solid #e6dccf; }
+    .auth-form .form-control:focus { border-color: var(--rojo); box-shadow: 0 0 0 .22rem rgba(196,39,13,.15); }
+    .auth-form .form-floating > label { color: #8a7a6d; }
+    .auth-form .campo { position: relative; margin-bottom: 16px; }
+    .auth-form .ojo { position: absolute; right: 12px; top: 16px; border: 0; background: none; color: #8a7a6d; font-size: 1.1rem; z-index: 5; }
+    .auth-form .ojo:hover { color: var(--rojo); }
+
+    .btn-pizza {
+        width: 100%; border: 0; color: #fff; font-weight: 600; padding: 14px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--rojo), var(--rojo-oscuro));
+        box-shadow: 0 8px 18px rgba(196,39,13,.35);
+        transition: transform .15s, box-shadow .15s;
+    }
+    .btn-pizza:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 12px 22px rgba(196,39,13,.45); }
+
+    .auth-form .pie { text-align: center; margin-top: 20px; font-size: .9rem; color: #7a6a5e; }
+    .auth-form .pie a { color: var(--rojo); font-weight: 600; text-decoration: none; }
+    .auth-form .pie a:hover { text-decoration: underline; }
+
+    /* Barra que muestra qué tan fuerte es la contraseña */
+    .fuerza { height: 6px; border-radius: 6px; background: #eee; overflow: hidden; margin-top: 8px; }
+    .fuerza > div { height: 100%; width: 0; transition: width .25s, background-color .25s; }
+
+    @@media (max-width: 767.98px) {
+        .auth-lado { display: none; }
+        .auth-card { max-width: 460px; min-height: 0; }
+        .auth-form { padding: 32px 22px; }
+    }
+</style>

@@ -1,0 +1,132 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model PizzeriaBackend.Models.RegistroViewModel
+@{
+    ViewData["Title"] = "Crear cuenta";
+    Layout = "_Layout";
+    var erroresGenerales = ViewData.ModelState.TryGetValue(string.Empty, out var entrada) ? entrada.Errors : null;
+}
+
+@section Styles {
+    <partial name="_AuthEstilos" />
+}
+
+<div class="auth-pagina">
+    <div class="auth-card">
+
+        <!-- Lado rojo decorativo -->
+        <div class="auth-lado">
+            <span class="auth-pizza p1" style="--foto:url('/images/mozzarella.png')"></span>
+            <span class="auth-pizza p2" style="--foto:url('/images/pepperoni.png')"></span>
+            <span class="auth-pizza p3" style="--foto:url('/images/caprese.png')"></span>
+
+            <h2 class="marca">Unite a<br />nuestra mesa</h2>
+            <p>Creá tu cuenta en unos segundos y hacé tus pedidos más rápido.</p>
+        </div>
+
+        <!-- Formulario -->
+        <div class="auth-form">
+            <div>
+                <span class="auth-icono">🍕</span>
+                <h1>Crear cuenta</h1>
+                <p class="sub">Completá tus datos para registrarte</p>
+            </div>
+
+            @if (erroresGenerales != null && erroresGenerales.Count > 0)
+            {
+                <div class="alert alert-danger py-2 small" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @erroresGenerales[0].ErrorMessage
+                </div>
+            }
+
+            <form asp-controller="Account" asp-action="Registro" method="post">
+
+                <div class="campo">
+                    <div class="form-floating">
+                        <input asp-for="Usuario" class="form-control" placeholder="Usuario" autocomplete="username"
+                               minlength="3" maxlength="30" autofocus required />
+                        <label for="Usuario"><i class="bi bi-person me-1"></i> Usuario</label>
+                    </div>
+                    <span asp-validation-for="Usuario" class="text-danger small d-block mt-1"></span>
+                </div>
+
+                <div class="campo">
+                    <div class="form-floating">
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Email" autocomplete="email" required />
+                        <label for="Email"><i class="bi bi-envelope me-1"></i> Email</label>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small d-block mt-1"></span>
+                </div>
+
+                <div class="campo">
+                    <div class="form-floating">
+                        <input asp-for="Clave" class="form-control pe-5" placeholder="Contraseña" autocomplete="new-password"
+                               minlength="6" required />
+                        <label for="Clave"><i class="bi bi-lock me-1"></i> Contraseña</label>
+                    </div>
+                    <button type="button" class="ojo" onclick="verClave('Clave', this)" aria-label="Mostrar u ocultar contraseña">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <div class="fuerza"><div id="fuerzaBarra"></div></div>
+                    <span id="fuerzaTexto" class="small text-muted"></span>
+                    <span asp-validation-for="Clave" class="text-danger small d-block mt-1"></span>
+                </div>
+
+                <div class="campo">
+                    <div class="form-floating">
+                        <input asp-for="ConfirmarClave" class="form-control pe-5" placeholder="Repetir contraseña" autocomplete="new-password" required />
+                        <label for="ConfirmarClave"><i class="bi bi-shield-lock me-1"></i> Repetir contraseña</label>
+                    </div>
+                    <button type="button" class="ojo" onclick="verClave('ConfirmarClave', this)" aria-label="Mostrar u ocultar contraseña">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <span asp-validation-for="ConfirmarClave" class="text-danger small d-block mt-1"></span>
+                </div>
+
+                <button type="submit" class="btn-pizza mt-2">Crear cuenta</button>
+            </form>
+
+            <div class="pie">
+                ¿Ya tenés cuenta?
+                <a asp-controller="Account" asp-action="Login">Iniciá sesión</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function verClave(id, boton) {
+        const input = document.getElementById(id);
+        const mostrar = input.type === 'password';
+        input.type = mostrar ? 'text' : 'password';
+        boton.querySelector('i').className = mostrar ? 'bi bi-eye-slash' : 'bi bi-eye';
+    }
+
+    // Barra de fuerza de la contraseña
+    const campoClave = document.getElementById('Clave');
+    const barra = document.getElementById('fuerzaBarra');
+    const texto = document.getElementById('fuerzaTexto');
+    const niveles = [
+        { ancho: '0%',   color: '#dddddd', texto: '' },
+        { ancho: '25%',  color: '#dc3545', texto: 'Débil' },
+        { ancho: '50%',  color: '#fd7e14', texto: 'Aceptable' },
+        { ancho: '75%',  color: '#f2b827', texto: 'Buena' },
+        { ancho: '100%', color: '#198754', texto: 'Muy fuerte' }
+    ];
+
+    campoClave.addEventListener('input', () => {
+        const v = campoClave.value;
+        let puntos = 0;
+        if (v.length >= 6) puntos++;
+        if (v.length >= 10) puntos++;
+        if (/[A-Z]/.test(v) && /[a-z]/.test(v)) puntos++;
+        if (/[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v)) puntos++;
+
+        const nivel = niveles[v.length === 0 ? 0 : Math.max(1, puntos)];
+        barra.style.width = nivel.ancho;
+        barra.style.backgroundColor = nivel.color;
+        texto.textContent = nivel.texto;
+    });
+</script>
+}
