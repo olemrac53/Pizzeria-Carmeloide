@@ -11,7 +11,10 @@ USE 5to_PizzeriaDB;
 CREATE TABLE Clientes (
     Id INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(150) NOT NULL,
-    Direccion VARCHAR(255) NOT NULL
+    Direccion VARCHAR(255) NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,  
+    Rol VARCHAR(30) NOT NULL DEFAULT 'Cliente',
+    FechaRegistro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 3. TABLA FUERTE: Pizzas
@@ -47,21 +50,18 @@ CREATE TABLE DetallesPedido (
     FOREIGN KEY (PizzaId) REFERENCES Pizzas(Id) ON DELETE CASCADE
 );
 
--- 1. Vaciar todos los registros de la tabla
-TRUNCATE TABLE Pizzas;
 
 -- 2. Cargar los datos de nuevo
-INSERT INTO Pizzas (Variedad, Precio) VALUES
-('Muzzarella Grande', 8500.00),
-('Fugazzeta Rellena', 11000.00),
-('Napolitana Especial', 9800.00),
-('Calabresa', 10500.00);
+INSERT INTO Pizzas (Variedad, Precio, Id) VALUES
+('Muzzarella Grande', 8500.00, 1),
+('Fugazzeta Rellena', 11000.00, 2),
+('Napolitana Especial', 9800.00, 3),
+('Calabresa', 10500.00, 4);
 
 -- 1. Desactivar el modo seguro temporalmente
 SET SQL_SAFE_UPDATES = 0;
 
 -- 2. Ejecutar tu sentencia DELETE
-DELETE FROM Pizzas WHERE Variedad = 'Calabresa';
+DELETE FROM Pizzas WHERE Id = 1 ;
 
--- 3. (Opcional pero recomendado) Volver a activarlo por seguridad
-SET SQL_SAFE_UPDATES = 1;
+select * from Pizzas;
