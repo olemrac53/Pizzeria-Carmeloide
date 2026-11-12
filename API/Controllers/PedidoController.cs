@@ -4,11 +4,11 @@ using PizzeriaBackend.Models;
 using PizzeriaBackend.Data;
 using System.Net.Sockets;
 using System.Text;
-using Microsoft.AspNetCore.Authorization; // <-- IMPORTANTE: Namespace para [Authorize]
+using Microsoft.AspNetCore.Authorization;
 
 namespace PizzeriaBackend.Controllers
 {
-    [Authorize] // <-- BLOQUEA EL ACCESO: Exige que el usuario haya iniciado sesión con cookies
+    [Authorize]
     public class PedidoController : Controller
     {
         private readonly PizzeriaDb _db;
@@ -18,15 +18,16 @@ namespace PizzeriaBackend.Controllers
             _db = db;
         }
 
-        // GET: /Pedido/Agregar (Muestra el formulario HTML)
+        // GET: /Pedido/Agregar (Muestra el formulario HTML con la pizza preseleccionada)
         [HttpGet]
-        public async Task<IActionResult> Agregar()
+        public async Task<IActionResult> Agregar(int? pizzaId = null)
         {
             var pizzas = await _db.Pizzas
-                .OrderBy(p => p.Variedad)
+                .OrderBy(p => p.Id)
                 .ToListAsync();
 
             ViewBag.Pizzas = pizzas;
+            ViewBag.PizzaIdSeleccionada = pizzaId;
 
             return View(new PedidoFormViewModel());
         }
@@ -43,7 +44,7 @@ namespace PizzeriaBackend.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Pizzas = await _db.Pizzas.OrderBy(p => p.Variedad).ToListAsync();
+                ViewBag.Pizzas = await _db.Pizzas.OrderBy(p => p.Id).ToListAsync();
                 return View(model);
             }
 
@@ -61,7 +62,7 @@ namespace PizzeriaBackend.Controllers
                     {
                         ModelState.AddModelError(string.Empty,
                             $"La pizza '{item.PizzaVariedad}' ya no está disponible en el menú.");
-                        ViewBag.Pizzas = await _db.Pizzas.OrderBy(p => p.Variedad).ToListAsync();
+                        ViewBag.Pizzas = await _db.Pizzas.OrderBy(p => p.Id).ToListAsync();
                         return View(model);
                     }
 
@@ -105,7 +106,7 @@ namespace PizzeriaBackend.Controllers
 
                 try
                 {
-                    ViewBag.Pizzas = await _db.Pizzas.OrderBy(p => p.Variedad).ToListAsync();
+                    ViewBag.Pizzas = await _db.Pizzas.OrderBy(p => p.Id).ToListAsync();
                 }
                 catch
                 {

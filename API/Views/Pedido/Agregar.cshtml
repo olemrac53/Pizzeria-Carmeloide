@@ -5,6 +5,7 @@
     ViewData["Title"] = "Pedir Pizza";
     var pizzasMenu = ViewBag.Pizzas as List<PizzeriaBackend.Models.Pizza>
                       ?? new List<PizzeriaBackend.Models.Pizza>();
+    int? pizzaIdSeleccionada = ViewBag.PizzaIdSeleccionada as int?;
 }
 
 <div class="container mt-4" style="max-width: 720px;">
@@ -51,7 +52,11 @@
                                     onchange="actualizarSubtotal(this)" disabled="@(!pizzasMenu.Any())">
                                 @foreach (var pizza in pizzasMenu)
                                 {
-                                    <option value="@pizza.Variedad" data-precio="@pizza.Precio.ToString("0.00")">
+                                    var estaSeleccionada = pizzaIdSeleccionada.HasValue && pizza.Id == pizzaIdSeleccionada.Value;
+
+                                    <option value="@pizza.Variedad"
+                                            data-precio="@pizza.Precio.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                            selected="@(estaSeleccionada ? "selected" : null)">
                                         @pizza.Variedad - $@pizza.Precio.ToString("N0")
                                     </option>
                                 }
@@ -97,7 +102,6 @@
 
 @section Scripts {
 <script>
-    // pizzaIndex siempre refleja la cantidad de filas actuales (próximo índice libre)
     let pizzaIndex = 1;
 
     function actualizarSubtotal(el) {
@@ -148,8 +152,6 @@
         actualizarBotonesQuitar();
     }
 
-    // Vuelve a numerar Items[0], Items[1]... sin huecos después de quitar una fila,
-    // porque el model binding de MVC necesita índices consecutivos para armar la lista.
     function renumerarFilas() {
         const filas = document.querySelectorAll('#pizzaItems .pizza-item');
         filas.forEach((fila, i) => {
@@ -168,6 +170,7 @@
         });
     }
 
+    // Calcula el subtotal y el total automáticamente con la pizza elegida al cargar la vista
     document.addEventListener('DOMContentLoaded', () => {
         const primerSelect = document.querySelector('.select-pizza');
         if (primerSelect) actualizarSubtotal(primerSelect);

@@ -214,7 +214,7 @@
                 <div class="panel-pizza">
                     <h3 id="panelTitulo"></h3>
                     <p id="panelTexto"></p>
-                    <a class="btn btn-danger btn-sm" asp-controller="Pedido" asp-action="Agregar">Pedir esta pizza</a>
+                    <a id="btnPedirPizza" class="btn btn-danger btn-sm" asp-controller="Pedido" asp-action="Agregar">Pedir esta pizza</a>
                 </div>
             </div>
         </div>
@@ -236,6 +236,7 @@
     const panelWrap = document.getElementById('panelWrap');
     const panelTitulo = document.getElementById('panelTitulo');
     const panelTexto = document.getElementById('panelTexto');
+    const btnPedirPizza = document.getElementById('btnPedirPizza');
 
     botones.forEach(boton => {
         boton.addEventListener('click', () => {
@@ -258,6 +259,10 @@
             boton.setAttribute('aria-expanded', 'true');
             panelTitulo.textContent = boton.dataset.nombre;
             panelTexto.textContent = boton.dataset.desc;
+
+            // Actualiza el enlace para llevar la variedad elegida
+            btnPedirPizza.href = `/Pedido/Agregar?Id=${encodeURIComponent(boton.dataset.nombre)}`;
+
             panelWrap.classList.add('abierto');
         });
     });

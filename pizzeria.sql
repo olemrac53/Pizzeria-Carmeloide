@@ -54,14 +54,9 @@ CREATE TABLE DetallesPedido (
 -- 2. Cargar los datos de nuevo
 INSERT INTO Pizzas (Variedad, Precio, Id) VALUES
 ('Muzzarella Grande', 8500.00, 1),
-('Fugazzeta Rellena', 11000.00, 2),
-('Napolitana Especial', 9800.00, 3),
-('Calabresa', 10500.00, 4);
+('Pepperoni', 11000.00, 2),
+('Napolitana rellena', 9800.00, 3),
+('Capresse', 10500.00, 4);
 
--- 1. Desactivar el modo seguro temporalmente
-SET SQL_SAFE_UPDATES = 0;
-
--- 2. Ejecutar tu sentencia DELETE
-DELETE FROM Pizzas WHERE Id = 1 ;
 
 select * from Pizzas;
