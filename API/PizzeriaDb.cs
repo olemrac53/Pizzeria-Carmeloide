@@ -11,4 +11,5 @@ public class PizzeriaDb : DbContext
     public DbSet<Pizza> Pizzas => Set<Pizza>();
     public DbSet<Pedido> Pedidos => Set<Pedido>();
     public DbSet<DetallePedido> DetallesPedido => Set<DetallePedido>();
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
 }

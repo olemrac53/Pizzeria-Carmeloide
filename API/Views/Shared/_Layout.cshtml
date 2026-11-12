@@ -49,7 +49,7 @@
 
     <!-- Sidebar: en mobile arranca colapsado (clase "collapse") y se despliega con el botón de arriba.
          En pantallas md+ "d-md-block" lo fuerza a mostrarse siempre, fijo, como antes. -->
-    <nav id="sidebarNav" class="collapse d-md-block p-3 text-white bg-dark d-flex flex-column" data-bs-theme="dark">
+    <nav id="sidebarNav" class="collapse d-md-flex flex-column p-3 text-white bg-dark" data-bs-theme="dark">
         <div>
             <a class="navbar-brand d-none d-md-inline-block fw-bold" asp-controller="Home" asp-action="Index">
                 <i class="bi bi-pizza text-danger me-1"></i> Pizzería
@@ -86,6 +86,9 @@
             {
                 <a class="btn btn-outline-light btn-sm w-100" asp-controller="Account" asp-action="Login">
                     <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+                </a>
+                <a class="btn btn-warning btn-sm w-100 mt-2 fw-bold text-dark" asp-controller="Account" asp-action="Registro">
+                    <i class="bi bi-person-plus me-1"></i> Registrarme
                 </a>
             }
         </div>

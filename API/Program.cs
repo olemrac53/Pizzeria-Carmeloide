@@ -15,8 +15,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";
-        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.Cookie.Name = "PizzeriaAuth";
+        options.Cookie.HttpOnly = true;                  // JavaScript no puede leer la cookie
+        options.Cookie.SameSite = SameSiteMode.Lax;      // no se manda desde otros sitios (protege de CSRF)
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // con HTTPS real usar: Always
+        options.LoginPath = "/Account/Login";            // a dónde manda a quien no inició sesión
+        options.LogoutPath = "/Account/Logout";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);  // dura 8 horas
+        options.SlidingExpiration = true;                // se renueva mientras el usuario usa el sitio
     });
 
 // CONFIGURACIÓN DE LA BASE DE DATOS
