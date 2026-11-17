@@ -1,0 +1,221 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model PizzeriaBackend.Models.PedidoFormViewModel
+
+@{
+    ViewData["Title"] = "Pedir Pizza";
+    var pizzasMenu = ViewBag.Pizzas as List<PizzeriaBackend.Models.Pizza>
+                      ?? new List<PizzeriaBackend.Models.Pizza>();
+    int? pizzaIdSeleccionada = ViewBag.PizzaIdSeleccionada as int?;
+}
+
+<div class="container mt-4" style="max-width: 720px;">
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0"> Realizar Pedido de Pizza</h4>
+        </div>
+        <div class="card-body">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                </div>
+            }
+
+            @if (!pizzasMenu.Any())
+            {
+                <div class="alert alert-warning">
+                    Todavía no hay pizzas cargadas en el menú. Agregá alguna en la tabla
+                    <code>Pizzas</code> de la base de datos para poder hacer un pedido.
+                </div>
+            }
+
+            <form asp-action="Agregar" asp-controller="Pedido" method="post" id="formPedido">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nombre del Cliente</label>
+                    <input type="text" name="ClienteNombre" class="form-control" placeholder="Ej: Juan Pérez" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Dirección de Entrega</label>
+                    <input type="text" name="ClienteDireccion" class="form-control" placeholder="Ej: Av. Rivadavia 1234" required />
+                </div>
+
+                <label class="form-label fw-bold">Pizzas del pedido</label>
+
+                <div id="pizzaItems">
+                    <div class="row pizza-item align-items-end mb-2" data-index="0">
+                        <div class="col-5">
+                            <label class="form-label small text-muted">Variedad</label>
+                            <select name="Items[0].PizzaVariedad" class="form-select select-pizza" required
+                                    onchange="actualizarSubtotal(this)" disabled="@(!pizzasMenu.Any())">
+                                @foreach (var pizza in pizzasMenu)
+                                {
+                                    var estaSeleccionada = pizzaIdSeleccionada.HasValue && pizza.Id == pizzaIdSeleccionada.Value;
+
+                                    <option value="@pizza.Variedad"
+                                            data-id="@pizza.Id"
+                                            data-precio="@pizza.Precio.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                            selected="@(estaSeleccionada ? "selected" : null)">
+                                        @pizza.Variedad - $@pizza.Precio.ToString("N0")
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small text-muted">Cantidad</label>
+                            <input type="number" name="Items[0].Cantidad" class="form-control input-cantidad"
+                                   value="1" min="1" max="20" required oninput="actualizarSubtotal(this)" />
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small text-muted">Subtotal ($)</label>
+                            <input type="text" class="form-control bg-light subtotal-display" readonly value="0.00" tabindex="-1" />
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-outline-danger btn-sm w-100 btn-quitar"
+                                    onclick="quitarPizza(this)" title="Quitar esta pizza" disabled>
+                                &times;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-outline-primary btn-sm mt-1 mb-3" onclick="agregarPizza()"
+                        disabled="@(!pizzasMenu.Any())">
+                    + Agregar otro tipo de pizza
+                </button>
+
+                <div class="text-end mb-3 pe-1">
+                    <span class="fs-5">Total: $<strong id="totalPedido">0.00</strong></span>
+                </div>
+
+                <div class="d-grid gap-2 mt-3">
+                    <button type="submit" class="btn btn-danger btn-lg" disabled="@(!pizzasMenu.Any())">
+                        Enviar Pedido a Cocina
+                    </button>
+                    <a href="/" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let pizzaIndex = 1;
+    let sincronizarCarrito = false;   // se activa cuando termina de cargar la página
+
+    function actualizarSubtotal(el) {
+        const row = el.closest('.pizza-item');
+        const select = row.querySelector('.select-pizza');
+        const cantidad = parseFloat(row.querySelector('.input-cantidad').value) || 0;
+        const opcion = select.options[select.selectedIndex];
+        const precio = opcion ? (parseFloat(opcion.getAttribute('data-precio')) || 0) : 0;
+
+        row.querySelector('.subtotal-display').value = (precio * cantidad).toFixed(2);
+        actualizarTotal();
+    }
+
+    function actualizarTotal() {
+        let total = 0;
+        document.querySelectorAll('.subtotal-display').forEach(el => {
+            total += parseFloat(el.value) || 0;
+        });
+        document.getElementById('totalPedido').textContent = total.toFixed(2);
+        guardarCarrito();
+    }
+
+    // Guarda en el carrito lo que hay en el formulario (así el contador del menú siempre coincide)
+    function guardarCarrito() {
+        if (!sincronizarCarrito) return;
+        const nuevo = {};
+        document.querySelectorAll('#pizzaItems .pizza-item').forEach(fila => {
+            const select = fila.querySelector('.select-pizza');
+            const opcion = select.options[select.selectedIndex];
+            const cantidad = parseInt(fila.querySelector('.input-cantidad').value) || 0;
+            if (opcion && opcion.dataset.id && cantidad > 0) {
+                nuevo[opcion.dataset.id] = (nuevo[opcion.dataset.id] || 0) + cantidad;
+            }
+        });
+        Carrito.guardar(nuevo);
+    }
+
+    // Llena el formulario con las pizzas que el cliente fue agregando desde el inicio
+    function cargarCarritoEnFormulario() {
+        const primerSelect = document.querySelector('.select-pizza');
+        if (!primerSelect) return;
+
+        const carrito = Carrito.leer();
+        const ids = Object.keys(carrito).filter(id =>
+            parseInt(carrito[id]) > 0 &&
+            Array.from(primerSelect.options).some(o => o.dataset.id === id));
+
+        ids.forEach((id, i) => {
+            if (i > 0) agregarPizza();   // crea una fila nueva
+            const fila = document.querySelectorAll('#pizzaItems .pizza-item')[i];
+            const select = fila.querySelector('.select-pizza');
+            const opcion = Array.from(select.options).find(o => o.dataset.id === id);
+            select.value = opcion.value;
+            fila.querySelector('.input-cantidad').value = Math.min(20, parseInt(carrito[id]));
+            actualizarSubtotal(select);
+        });
+    }
+
+    function agregarPizza() {
+        const container = document.getElementById('pizzaItems');
+        const primera = container.querySelector('.pizza-item');
+        const clone = primera.cloneNode(true);
+
+        clone.dataset.index = pizzaIndex;
+        clone.querySelectorAll('[name]').forEach(el => {
+            el.setAttribute('name', el.getAttribute('name').replace(/Items\[\d+\]/, `Items[${pizzaIndex}]`));
+        });
+        clone.querySelector('.input-cantidad').value = 1;
+        clone.querySelector('.subtotal-display').value = '0.00';
+
+        container.appendChild(clone);
+        pizzaIndex++;
+
+        actualizarSubtotal(clone.querySelector('.select-pizza'));
+        actualizarBotonesQuitar();
+    }
+
+    function quitarPizza(boton) {
+        const container = document.getElementById('pizzaItems');
+        if (container.querySelectorAll('.pizza-item').length <= 1) return;
+
+        boton.closest('.pizza-item').remove();
+        renumerarFilas();
+        actualizarTotal();
+        actualizarBotonesQuitar();
+    }
+
+    function renumerarFilas() {
+        const filas = document.querySelectorAll('#pizzaItems .pizza-item');
+        filas.forEach((fila, i) => {
+            fila.dataset.index = i;
+            fila.querySelectorAll('[name]').forEach(el => {
+                el.setAttribute('name', el.getAttribute('name').replace(/Items\[\d+\]/, `Items[${i}]`));
+            });
+        });
+        pizzaIndex = filas.length;
+    }
+
+    function actualizarBotonesQuitar() {
+        const filas = document.querySelectorAll('.pizza-item');
+        document.querySelectorAll('.btn-quitar').forEach(btn => {
+            btn.disabled = filas.length <= 1;
+        });
+    }
+
+    // Calcula el subtotal y el total, y carga las pizzas que se agregaron desde el inicio
+    document.addEventListener('DOMContentLoaded', () => {
+        const primerSelect = document.querySelector('.select-pizza');
+        if (primerSelect) actualizarSubtotal(primerSelect);
+        cargarCarritoEnFormulario();
+        actualizarBotonesQuitar();
+        sincronizarCarrito = true;   // desde acá, cada cambio del formulario se guarda en el carrito
+    });
+</script>
+}

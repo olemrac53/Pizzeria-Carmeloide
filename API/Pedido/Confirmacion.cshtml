@@ -1,0 +1,73 @@
+@model PizzeriaBackend.Models.Pedido
+
+@{
+    ViewData["Title"] = "Confirmación de Pedido";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow border-success">
+        <div class="card-header bg-success text-white text-center">
+            <h3>¡Pedido Registrado con Éxito!</h3>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title text-center text-muted mb-4">Comanda N° #<span id="pedidoId">@Model.Id</span></h5>
+            
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item"><strong>Cliente:</strong> @Model.Cliente.Nombre</li>
+                <li class="list-group-item"><strong>Dirección:</strong> @Model.Cliente.Direccion</li>
+                <li class="list-group-item">
+                    <strong>Pizzas:</strong>
+                    @foreach (var detalle in Model.Detalles)
+                    {
+                        <span>@detalle.Cantidad x @detalle.Pizza.Variedad ($@detalle.Pizza.Precio c/u)</span>
+                    }
+                </li>
+                <li class="list-group-item"><strong>Destino:</strong> @Model.ActorAsignado</li>
+                <li class="list-group-item">
+                    <strong>Estado actual:</strong> 
+                    <span id="badgeEstado" class="badge bg-warning text-dark fs-6">@Model.Estado</span>
+                </li>
+            </ul>
+
+            <div class="text-center mt-4">
+                <div class="spinner-border text-danger spinner-border-sm me-2" role="status" id="spinnerCocina"></div>
+                <small class="text-muted" id="textoEsperando">Esperando respuesta de la cocina vía Sockets...</small>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <a href="/Pedido/Agregar" class="btn btn-outline-danger">Realizar otro pedido</a>
+                <a href="/" class="btn btn-outline-secondary">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // El pedido ya se envió: se vacía el carrito
+    Carrito.vaciar();
+
+    // Monitoreo en vivo: detecta cuando CocinaApp actualiza el estado mediante PUT
+    const pedidoId = @Model.Id;
+    const intervalo = setInterval(async () => {
+        try {
+            const resp = await fetch(`/pedidos`);
+            if (resp.ok) {
+                const pedidos = await resp.json();
+                const actual = pedidos.find(p => p.id === pedidoId);
+                if (actual && actual.estado !== "Espera de confirmación") {
+                    const badge = document.getElementById("badgeEstado");
+                    badge.innerText = actual.estado;
+                    badge.className = "badge bg-success fs-6";
+                    
+                    document.getElementById("spinnerCocina").style.display = "none";
+                    document.getElementById("textoEsperando").innerText = "¡Cocina recibió y comenzó la preparación!";
+                    clearInterval(intervalo);
+                }
+            }
+        } catch (e) {
+            console.warn("Reintentando consulta de estado...");
+        }
+    }, 2000);
+</script>
+}

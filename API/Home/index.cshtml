@@ -1,0 +1,323 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+@section Styles {
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&family=Bebas+Neue&family=Gochi+Hand&family=Poppins:wght@@500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --rojo: #c4270d;
+        --rojo-oscuro: #a81f08;
+        --amarillo: #f2b827;
+        --crema: #f6e7c5;
+    }
+
+    /* Anula el padding del <main> del Layout para que el diseño ocupe todo el ancho */
+    .inicio { margin: -1.5rem; }
+
+    .pantalla {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--rojo);
+        background-image:
+            radial-gradient(circle at 15% 25%, rgba(255,255,255,.07) 0 60px, transparent 61px),
+            radial-gradient(circle at 85% 70%, rgba(255,255,255,.07) 0 80px, transparent 81px),
+            radial-gradient(circle at 50% 95%, rgba(255,255,255,.06) 0 70px, transparent 71px);
+        color: #fff;
+    }
+
+    /* ---------- Pizza dibujada con CSS (se reemplaza sola si hay foto en /images) ---------- */
+    .disco {
+        position: relative;
+        width: var(--d, 150px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 8px 18px rgba(0,0,0,.35);
+        background:
+            radial-gradient(circle at 30% 30%, var(--t1, #d9381e) 0 7%, transparent 8%),
+            radial-gradient(circle at 68% 28%, var(--t1, #d9381e) 0 7%, transparent 8%),
+            radial-gradient(circle at 50% 55%, var(--t1, #d9381e) 0 8%, transparent 9%),
+            radial-gradient(circle at 28% 70%, var(--t2, #4f8a2e) 0 6%, transparent 7%),
+            radial-gradient(circle at 72% 72%, var(--t2, #4f8a2e) 0 6%, transparent 7%),
+            radial-gradient(circle, var(--queso, #f3c969) 0 62%, #e0a43f 63% 78%, #c98a2b 79% 100%);
+    }
+    /* Si existe la foto, se dibuja encima; si no existe, simplemente no se ve */
+    .disco::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: var(--foto) center / cover no-repeat;
+    }
+    .disco.mozzarella  { --t1: #f7ecd0; --t2: #f1dca4; --queso: #f6e3a8; }
+    .disco.pepperoni   { --t1: #b3201a; --t2: #b3201a; --queso: #f0b84f; }
+    .disco.napolitana  { --t1: #e9a5a0; --t2: #4f8a2e; --queso: #f3d27c; }
+    .disco.caprese     { --t1: #d9381e; --t2: #3f7d2b; --queso: #f6e6b0; }
+
+    /* ---------- PANTALLA 1: portada ---------- */
+    .portada { min-height: 540px; padding-bottom: 70px; display: flex; align-items: center; justify-content: center; }
+    .portada .titulo {
+        font-family: 'Sacramento', cursive;
+        color: #111;
+        font-size: clamp(3.2rem, 9vw, 7rem);
+        line-height: 1.05;
+        margin: 0;
+        position: relative;
+        z-index: 2;
+    }
+    .portada .deco { position: absolute; z-index: 1; }
+    .deco.a { --d: 170px; top: 40px;  right: 150px; }
+    .deco.b { --d: 160px; top: 130px; right: -30px; }
+    .deco.c { --d: 150px; top: 250px; right: 60px; }
+    .deco.d { --d: 180px; bottom: 40px; right: -20px; }
+    .deco.e { --d: 140px; bottom: 30px; left: -40px; }
+    .etiqueta-pizza {
+        position: absolute; top: 0; right: 0; z-index: 3;
+        background: var(--amarillo); color: var(--rojo-oscuro);
+        font-family: 'Poppins', sans-serif; font-weight: 700;
+        padding: 14px 40px 60px 20px;
+    }
+
+    .barra-crema {
+        position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+        background: var(--crema); color: var(--rojo-oscuro);
+        font-family: 'Poppins', sans-serif; font-weight: 700;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 24px;
+    }
+    .barra-crema a, .link-orden { color: inherit; text-decoration: none; }
+    .barra-crema a:hover { text-decoration: underline; }
+
+    /* ---------- PANTALLA 2: menú ---------- */
+    .menu-pizzas { padding: 24px 0 24px; }
+    .cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+    .pildora {
+        background: var(--amarillo); color: var(--rojo-oscuro);
+        font-family: 'Poppins', sans-serif; font-weight: 700; font-size: .85rem;
+        padding: 18px 32px; border-radius: 0 40px 40px 0;
+    }
+    .pildora.der { border-radius: 40px 0 0 40px; }
+    .titulo-menu { text-align: center; flex: 1; min-width: 260px; }
+    .titulo-menu .nuestras { font-family: 'Gochi Hand', cursive; color: var(--amarillo); font-size: 2rem; display: block; transform: rotate(-6deg); }
+    .titulo-menu .deliciosas { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 8vw, 5.5rem); line-height: .9; display: block; transform: rotate(-4deg); text-shadow: 3px 3px 0 rgba(0,0,0,.18); }
+    .titulo-menu .italianas { font-family: 'Gochi Hand', cursive; color: var(--amarillo); font-size: 1.7rem; display: block; transform: rotate(-4deg); }
+
+    .fila-pizzas { display: flex; justify-content: center; flex-wrap: wrap; gap: 28px; margin: 28px 12px 10px; }
+    .pizza-btn {
+        background: none; border: 0; color: #fff; cursor: pointer;
+        display: flex; flex-direction: column; align-items: center; gap: 10px;
+        padding: 6px; border-radius: 16px; transition: transform .2s;
+    }
+    .pizza-btn:hover { transform: translateY(-4px) scale(1.03); }
+    .pizza-btn:focus-visible { outline: 3px solid var(--amarillo); }
+    .pizza-btn .nombre { font-family: 'Gochi Hand', cursive; font-size: 1.35rem; line-height: 1.1; max-width: 160px; }
+    .pizza-btn.activa .disco { outline: 5px solid var(--amarillo); outline-offset: 4px; }
+
+    /* Panel desplegable: se abre con una transición suave */
+    .panel-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+    .panel-wrap.abierto { grid-template-rows: 1fr; }
+    .panel-wrap > div { overflow: hidden; }
+    .panel-pizza {
+        background: var(--crema); color: #3a2a1a;
+        max-width: 640px; margin: 14px auto 6px; padding: 18px 22px;
+        border-radius: 18px; text-align: left;
+        box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    }
+    .panel-pizza h3 { font-family: 'Gochi Hand', cursive; color: var(--rojo-oscuro); margin: 0 0 6px; font-size: 1.7rem; }
+    .panel-pizza p { margin: 0 0 12px; font-family: 'Poppins', sans-serif; font-size: .95rem; }
+
+    .pie-menu { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px 4px; font-family: 'Poppins', sans-serif; font-weight: 700; }
+    .pin { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: #1b1b1b; color: #fff; margin-right: 12px; }
+
+    /* Aviso que aparece al agregar una pizza al pedido */
+    .aviso-carrito {
+        position: fixed; left: 50%; bottom: 28px;
+        transform: translateX(-50%) translateY(20px);
+        background: #1b1b1b; color: #fff; padding: 12px 22px; border-radius: 30px;
+        font-family: 'Poppins', sans-serif; font-weight: 600; font-size: .9rem;
+        box-shadow: 0 8px 22px rgba(0,0,0,.35);
+        opacity: 0; pointer-events: none;
+        transition: opacity .25s, transform .25s; z-index: 2000;
+    }
+    .aviso-carrito.mostrar { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @@media (max-width: 767.98px) {
+        .inicio { margin: -1.5rem -1.5rem; }
+        .deco.a, .deco.c { display: none; }
+        .deco.b { --d: 110px; top: 20px; right: -30px; }
+        .deco.d { --d: 120px; }
+        .deco.e { --d: 100px; }
+        .pildora { padding: 12px 18px; font-size: .75rem; }
+        .pie-menu, .barra-crema { font-size: .8rem; padding-left: 14px; padding-right: 14px; }
+    }
+</style>
+}
+
+<div class="inicio">
+
+    <!-- Aviso que aparece al agregar una pizza -->
+    <div id="avisoCarrito" class="aviso-carrito" role="status" aria-live="polite"></div>
+
+    <!-- ===================== PANTALLA 1: PORTADA ===================== -->
+    <section class="pantalla portada">
+        <div class="etiqueta-pizza">🍕 Pizza</div>
+
+        <h1 class="titulo">Amore a<br />prima pizza</h1>
+
+        <span class="disco deco a pepperoni" style="--foto:url('/images/pepperoni.png')"></span>
+        <span class="disco deco b caprese" style="--foto:url('/images/caprese.png')"></span>
+        <span class="disco deco c napolitana" style="--foto:url('/images/napolitana.png')"></span>
+        <span class="disco deco d pepperoni" style="--foto:url('/images/pepperoni.png')"></span>
+        <span class="disco deco e napolitana" style="--foto:url('/images/napolitana.png')"></span>
+
+        <div class="barra-crema">
+            <a asp-controller="Pedido" asp-action="Agregar">Orden</a>
+            <span>Av. Rivadavia 123</span>
+            <span></span>
+        </div>
+    </section>
+
+    <!-- ===================== PANTALLA 2: MENÚ ===================== -->
+    <section class="pantalla menu-pizzas">
+        <div class="cabecera">
+            <div class="pildora">🛵 FREE DELIVERY</div>
+
+            <div class="titulo-menu">
+                <span class="nuestras">Nuestras</span>
+                <span class="deliciosas">DELICIOSAS</span>
+                <span class="italianas">italianas pizzas</span>
+            </div>
+
+            <div class="pildora der">PAGINA N° 1</div>
+        </div>
+
+        @* data-id de cada botón = Id de esa pizza en la tabla Pizzas de MySQL (1 a 4 en tu pizzeria.sql) *@
+        <div class="fila-pizzas" id="filaPizzas">
+            <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-id="1"
+                    data-nombre="Mozzarella Pizza"
+                    data-desc="Salsa de tomate casera, abundante muzzarella derretida y un toque de orégano. La clásica de siempre.">
+                <span class="disco mozzarella" style="--foto:url('/images/mozzarella.png')"></span>
+                <span class="nombre">Mozzarella Pizza</span>
+            </button>
+
+            <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-id="2"
+                    data-nombre="Pepperoni Pizza"
+                    data-desc="Salsa de tomate, muzzarella y rodajas de pepperoni picante, horneadas hasta quedar crocantes en los bordes.">
+                <span class="disco pepperoni" style="--foto:url('/images/pepperoni.png')"></span>
+                <span class="nombre">Pepperoni Pizza</span>
+            </button>
+
+            <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-id="3"
+                    data-nombre="Napolitana rellena Pizza"
+                    data-desc="Rellena de muzzarella y jamón, con rodajas de tomate, rúcula fresca y un hilo de aceite de oliva.">
+                <span class="disco napolitana" style="--foto:url('/images/napolitana.png')"></span>
+                <span class="nombre">Napolitana rellena Pizza</span>
+            </button>
+
+            <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-id="4"
+                    data-nombre="Capresse Pizza"
+                    data-desc="Muzzarella, tomate fresco, hojas de albahaca y aceite de oliva. Liviana y muy aromática.">
+                <span class="disco caprese" style="--foto:url('/images/caprese.png')"></span>
+                <span class="nombre">Capresse Pizza</span>
+            </button>
+        </div>
+
+        <!-- Acá se despliega la descripción de la pizza elegida -->
+        <div class="panel-wrap" id="panelWrap" aria-live="polite">
+            <div>
+                <div class="panel-pizza">
+                    <h3 id="panelTitulo"></h3>
+                    <p id="panelTexto"></p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" id="btnAgregarPizza" class="btn btn-danger btn-sm">
+                            <i class="bi bi-cart-plus me-1"></i> Agregar al pedido
+                        </button>
+                        <a class="btn btn-outline-dark btn-sm" asp-controller="Pedido" asp-action="Agregar">
+                            Ver mi pedido<span id="contadorPedido"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pie-menu">
+            <span class="d-flex align-items-center">
+                <span class="pin"><i class="bi bi-geo-alt-fill"></i></span>
+                AV. RIVADAVIA 123
+            </span>
+            <a class="link-orden" asp-controller="Pedido" asp-action="Agregar">Orden</a>
+        </div>
+    </section>
+
+</div>
+
+@section Scripts {
+<script>
+    const botones = document.querySelectorAll('.pizza-btn');
+    const panelWrap = document.getElementById('panelWrap');
+    const panelTitulo = document.getElementById('panelTitulo');
+    const panelTexto = document.getElementById('panelTexto');
+    const btnAgregarPizza = document.getElementById('btnAgregarPizza');
+    const contadorPedido = document.getElementById('contadorPedido');
+    const aviso = document.getElementById('avisoCarrito');
+
+    let pizzaActiva = null;      // la pizza que está abierta en el panel
+    let temporizadorAviso = null;
+
+    // Muestra cuántas pizzas hay en el pedido: "Ver mi pedido (3)"
+    function actualizarContador() {
+        const total = Carrito.total();
+        contadorPedido.textContent = total > 0 ? ` (${total})` : '';
+    }
+
+    function mostrarAviso(texto) {
+        aviso.textContent = texto;
+        aviso.classList.add('mostrar');
+        clearTimeout(temporizadorAviso);
+        temporizadorAviso = setTimeout(() => aviso.classList.remove('mostrar'), 2200);
+    }
+
+    botones.forEach(boton => {
+        boton.addEventListener('click', () => {
+            const yaEstabaActiva = boton.classList.contains('activa');
+
+            // Cierra/desmarca todas
+            botones.forEach(b => {
+                b.classList.remove('activa');
+                b.setAttribute('aria-expanded', 'false');
+            });
+
+            // Si tocó la misma pizza otra vez, solo se cierra el panel
+            if (yaEstabaActiva) {
+                pizzaActiva = null;
+                panelWrap.classList.remove('abierto');
+                return;
+            }
+
+            // Si no, muestra la descripción de la pizza elegida
+            pizzaActiva = boton;
+            boton.classList.add('activa');
+            boton.setAttribute('aria-expanded', 'true');
+            panelTitulo.textContent = boton.dataset.nombre;
+            panelTexto.textContent = boton.dataset.desc;
+            panelWrap.classList.add('abierto');
+        });
+    });
+
+    // Botón "Agregar al pedido": guarda la pizza abierta en el carrito
+    btnAgregarPizza.addEventListener('click', () => {
+        if (!pizzaActiva) return;
+        const cantidad = Carrito.agregar(pizzaActiva.dataset.id);
+        mostrarAviso(`✓ ${pizzaActiva.dataset.nombre} agregada al pedido (x${cantidad})`);
+        actualizarContador();
+    });
+
+    actualizarContador();
+</script>
+}
