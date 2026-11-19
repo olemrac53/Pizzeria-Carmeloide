@@ -61,9 +61,6 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 
-// ======================================================================
-// [COOKIES] 2. MIDDLEWARES DE AUTENTICACIÓN Y AUTORIZACIÓN
-// ======================================================================
 // IMPORTANTE: El orden de estas líneas es estricto y obligatorio.
 // - UseAuthentication(): Lee la cookie "PizzeriaAuth" que envía el navegador, la descifra y reconstruye la identidad del usuario (User).
 // - UseAuthorization(): Revisa si el usuario actual tiene permisos para entrar a las rutas protegidas con [Authorize].

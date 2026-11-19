@@ -60,3 +60,9 @@ INSERT INTO Pizzas (Variedad, Precio, Id) VALUES
 
 
 select * from Pizzas;
+
+
+ALTER TABLE Clientes
+    DROP COLUMN PasswordHash,
+    DROP COLUMN Rol,
+    DROP COLUMN FechaRegistro;
