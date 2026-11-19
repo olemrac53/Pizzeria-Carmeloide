@@ -11,22 +11,31 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. INYECCIÓN DEL SERVICIO MVC
 builder.Services.AddControllersWithViews();
 
-// CONFIGURACIÓN DE COOKIES DE AUTENTICACIÓN
+// ======================================================================
+// [COOKIES] 1. CONFIGURACIÓN DEL SERVICIO DE AUTENTICACIÓN
+// ======================================================================
+// Aquí se registra el esquema de autenticación por cookies. 
+// - Cookie.Name: El nombre que tendrá la cookie en el navegador del cliente ("PizzeriaAuth").
+// - HttpOnly: Impide que scripts de JavaScript accedan a la cookie (protección vital contra ataques XSS).
+// - SameSite: Define cómo se comparte la cookie con sitios de terceros (Lax protege contra ataques CSRF).
+// - LoginPath: La ruta a la que se redirige automáticamente al usuario si intenta acceder a una sección protegida sin estar logueado.
+// - ExpireTimeSpan: El tiempo que dura la sesión activa antes de expirar.
+// - SlidingExpiration: Si está en true, renueva el tiempo de vida de la cookie cada vez que el usuario interactúa con la web.
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.Cookie.Name = "PizzeriaAuth";
-        options.Cookie.HttpOnly = true;                  // JavaScript no puede leer la cookie
-        options.Cookie.SameSite = SameSiteMode.Lax;      // no se manda desde otros sitios (protege de CSRF)
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // con HTTPS real usar: Always
-        options.LoginPath = "/Account/Login";            // a dónde manda a quien no inició sesión
+        options.Cookie.HttpOnly = true;                  
+        options.Cookie.SameSite = SameSiteMode.Lax;      
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
+        options.LoginPath = "/Account/Login";            
         options.LogoutPath = "/Account/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromHours(8);  // dura 8 horas
-        options.SlidingExpiration = true;                // se renueva mientras el usuario usa el sitio
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);  
+        options.SlidingExpiration = true;                
     });
 
-// CONFIGURACIÓN DE LA BASE DE DATOS
-var connectionString = "Server=localhost;Database=5to_PizzeriaDB;User=5to_agbd;Password=Trigg3rs!;";
+// CONFIGURACIÓN DE LA BASE DE DATOS (MySQL)
+var connectionString = "Server=localhost;Database=5to_PizzeriaDB;User=root;Password=root;";
 
 builder.Services.AddDbContext<PizzeriaDb>(options => 
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
@@ -44,16 +53,21 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-// 2. MIDDLEWARES NECESARIOS (IMPORTANTE: UseStaticFiles habilita la carpeta wwwroot)
+// Habilita los archivos estáticos de la carpeta wwwroot (CSS, imágenes, JS)
 app.UseStaticFiles(); 
 app.UseRouting();     
 
-// AUTENTICACIÓN Y AUTORIZACIÓN
+// ======================================================================
+// [COOKIES] 2. MIDDLEWARES DE AUTENTICACIÓN Y AUTORIZACIÓN
+// ======================================================================
+// IMPORTANTE: El orden de estas líneas es estricto y obligatorio.
+// - UseAuthentication(): Lee la cookie "PizzeriaAuth" que envía el navegador, la descifra y reconstruye la identidad del usuario (User).
+// - UseAuthorization(): Revisa si el usuario actual tiene permisos para entrar a las rutas protegidas con [Authorize].
 app.UseAuthentication(); 
 app.UseAuthorization(); 
 
 // ----------------------------------------------------------------------
-// ENDPOINTS DE API MINIMAL Y SOCKETS
+// ENDPOINTS DE API MINIMAL Y SOCKETS (Comunicación con Cocina)
 // ----------------------------------------------------------------------
 app.MapGet("/pedidos", async (PizzeriaDb db) => 
     await db.Pedidos.Where(p => p.Activo).ToListAsync()
@@ -131,13 +145,9 @@ app.MapDelete("/pedidos/{id}", async (int id, PizzeriaDb db) =>
     return Results.NotFound();
 });
 
-// 3. MAPEO DE RUTAS PARA LOS CONTROLADORES MVC
+// 3. MAPEO DE RUTAS PARA LOS CONTROLADORES MVC (Home, Account, Pedido, etc.)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-
-//corregis que el cliente no pueda escribir la variedad de la pizza, hacer un landing lindo 
-//crear usuario
-//iniciar sesion usuario

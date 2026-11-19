@@ -8,6 +8,13 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PizzeriaBackend.Controllers
 {
+    // ==========================================
+    // [COOKIES] 5. RESTRICCIÓN Y VALIDACIÓN DE ACCESO
+    // ==========================================
+    // El atributo [Authorize] le indica a ASP.NET Core que este controlador completo 
+    // está protegido. Cuando el usuario intenta entrar aquí, el sistema verifica que 
+    // la cookie "PizzeriaAuth" esté presente y sea válida. Si no existe o expiró, 
+    // el usuario es redirigido automáticamente a la página de Login configurada en Program.cs.
     [Authorize]
     public class PedidoController : Controller
     {
@@ -18,7 +25,6 @@ namespace PizzeriaBackend.Controllers
             _db = db;
         }
 
-        // GET: /Pedido/Agregar (Muestra el formulario HTML con la pizza preseleccionada)
         [HttpGet]
         public async Task<IActionResult> Agregar(int? pizzaId = null)
         {
@@ -32,7 +38,6 @@ namespace PizzeriaBackend.Controllers
             return View(new PedidoFormViewModel());
         }
 
-        // POST: /Pedido/Agregar (Procesa el formulario HTML y dispara sockets)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Agregar(PedidoFormViewModel model)
@@ -81,8 +86,6 @@ namespace PizzeriaBackend.Controllers
                 _db.Pedidos.Add(nuevoPedido);
                 await _db.SaveChangesAsync();
 
-                Console.WriteLine($"[WEB-MVC] Pedido #{nuevoPedido.Id} creado desde HTML con {detalles.Count} tipo(s) de pizza. Enviando socket a Cocina...");
-
                 try
                 {
                     using var tcpClient = new TcpClient("127.0.0.1", 5050);
@@ -117,7 +120,6 @@ namespace PizzeriaBackend.Controllers
             }
         }
 
-        // GET: /Pedido/Confirmacion/5 (Comprobante y seguimiento de estado)
         [HttpGet]
         public async Task<IActionResult> Confirmacion(int id)
         {

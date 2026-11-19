@@ -18,8 +18,6 @@ namespace API.Controllers
             _db = db;
         }
 
-        // ---------------------------- LOGIN ----------------------------
-
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
@@ -40,28 +38,23 @@ namespace API.Controllers
                 return View(model);
 
             var nombreUsuario = model.Usuario.Trim();
-
-            // Busca al usuario en la base de datos (MySQL)
             var usuario = await _db.Usuarios
                 .FirstOrDefaultAsync(u => u.NombreUsuario == nombreUsuario);
 
-            // Mismo mensaje si falla el usuario o la clave (no damos pistas)
             if (usuario == null || !PasswordService.Verificar(model.Clave, usuario.PasswordHash))
             {
                 ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos");
                 return View(model);
             }
 
+            // Si el usuario es válido, se emite la cookie llamando al método auxiliar
             await IniciarSesion(usuario, model.Recordarme);
 
-            // Solo redirige a direcciones de este mismo sitio (evita redirecciones maliciosas)
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return LocalRedirect(returnUrl);
 
             return RedirectToAction("Index", "Home");
         }
-
-        // --------------------------- REGISTRO --------------------------
 
         [HttpGet]
         public IActionResult Registro()
@@ -82,7 +75,6 @@ namespace API.Controllers
             var nombre = model.Usuario.Trim();
             var email = model.Email.Trim();
 
-            // Que no exista otro usuario o email igual
             if (await _db.Usuarios.AnyAsync(u => u.NombreUsuario == nombre))
                 ModelState.AddModelError(nameof(model.Usuario), "Ese nombre de usuario ya está en uso");
 
@@ -96,44 +88,36 @@ namespace API.Controllers
             {
                 NombreUsuario = nombre,
                 Email = email,
-                PasswordHash = PasswordService.Hashear(model.Clave), // se guarda el hash, no la clave
+                PasswordHash = PasswordService.Hashear(model.Clave),
                 Rol = "Cliente"
             };
 
             _db.Usuarios.Add(nuevo);
+            await _db.SaveChangesAsync();
 
-            try
-            {
-                await _db.SaveChangesAsync(); // INSERT en la tabla Usuarios
-            }
-            catch (DbUpdateException ex)
-            {
-                Console.WriteLine($"[ERROR REGISTRO] {ex.Message}");
-                ModelState.AddModelError(string.Empty, "No se pudo crear la cuenta. Probá de nuevo.");
-                return View(model);
-            }
-
-            // Después de registrarse, entra directo (se crea la cookie)
+            // Al registrarse con éxito, también se emite la cookie automáticamente para loguearlo al instante
             await IniciarSesion(nuevo, false);
             return RedirectToAction("Index", "Home");
         }
 
-        // ---------------------------- LOGOUT ---------------------------
-
+        // ==========================================
+        // [COOKIES] 3. DESTRUCCIÓN DE LA COOKIE (LOGOUT)
+        // ==========================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // Borra la cookie de sesión
+            // HttpContext.SignOutAsync borra/invalida la cookie de autenticación del navegador del cliente
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
 
-        // ------------------------ AUXILIAR COOKIE ----------------------
-
+        // ==========================================
+        // [COOKIES] 4. MÉTODO AUXILIAR DE EMISIÓN
+        // ==========================================
         private async Task IniciarSesion(Usuario usuario, bool recordarme)
         {
-            // Claims = datos del usuario que viajan dentro de la cookie
+            // 1. Se empaquetan los datos del usuario dentro de "Claims" (identidad digital)
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
@@ -146,13 +130,12 @@ namespace API.Controllers
 
             var propiedades = new AuthenticationProperties
             {
-                // true  = cookie persistente (sigue al cerrar el navegador)
-                // false = cookie de sesión (se borra al cerrar el navegador)
+                // IsPersistent define si la cookie sobrevive al cerrar el navegador (true si marcó "Recordarme")
                 IsPersistent = recordarme,
                 ExpiresUtc = recordarme ? DateTimeOffset.UtcNow.AddDays(7) : (DateTimeOffset?)null
             };
 
-            // Crea la cookie cifrada y la manda al navegador
+            // 2. HttpContext.SignInAsync serializa los claims, los cifra y genera la cookie HTTP que se envía al navegador
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(identidad),

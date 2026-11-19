@@ -13,7 +13,6 @@
         --crema: #f6e7c5;
     }
 
-    /* Anula el padding del <main> del Layout para que el diseño ocupe todo el ancho */
     .inicio { margin: -1.5rem; }
 
     .pantalla {
@@ -27,7 +26,6 @@
         color: #fff;
     }
 
-    /* ---------- Pizza dibujada con CSS (se reemplaza sola si hay foto en /images) ---------- */
     .disco {
         position: relative;
         width: var(--d, 150px);
@@ -43,7 +41,6 @@
             radial-gradient(circle at 72% 72%, var(--t2, #4f8a2e) 0 6%, transparent 7%),
             radial-gradient(circle, var(--queso, #f3c969) 0 62%, #e0a43f 63% 78%, #c98a2b 79% 100%);
     }
-    /* Si existe la foto, se dibuja encima; si no existe, simplemente no se ve */
     .disco::before {
         content: "";
         position: absolute;
@@ -56,7 +53,6 @@
     .disco.napolitana  { --t1: #e9a5a0; --t2: #4f8a2e; --queso: #f3d27c; }
     .disco.caprese     { --t1: #d9381e; --t2: #3f7d2b; --queso: #f6e6b0; }
 
-    /* ---------- PANTALLA 1: portada ---------- */
     .portada { min-height: 540px; padding-bottom: 70px; display: flex; align-items: center; justify-content: center; }
     .portada .titulo {
         font-family: 'Sacramento', cursive;
@@ -90,7 +86,6 @@
     .barra-crema a, .link-orden { color: inherit; text-decoration: none; }
     .barra-crema a:hover { text-decoration: underline; }
 
-    /* ---------- PANTALLA 2: menú ---------- */
     .menu-pizzas { padding: 24px 0 24px; }
     .cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
     .pildora {
@@ -115,7 +110,6 @@
     .pizza-btn .nombre { font-family: 'Gochi Hand', cursive; font-size: 1.35rem; line-height: 1.1; max-width: 160px; }
     .pizza-btn.activa .disco { outline: 5px solid var(--amarillo); outline-offset: 4px; }
 
-    /* Panel desplegable: se abre con una transición suave */
     .panel-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
     .panel-wrap.abierto { grid-template-rows: 1fr; }
     .panel-wrap > div { overflow: hidden; }
@@ -130,22 +124,11 @@
 
     .pie-menu { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px 4px; font-family: 'Poppins', sans-serif; font-weight: 700; }
     .pin { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: #1b1b1b; color: #fff; margin-right: 12px; }
-
-    @@media (max-width: 767.98px) {
-        .inicio { margin: -1.5rem -1.5rem; }
-        .deco.a, .deco.c { display: none; }
-        .deco.b { --d: 110px; top: 20px; right: -30px; }
-        .deco.d { --d: 120px; }
-        .deco.e { --d: 100px; }
-        .pildora { padding: 12px 18px; font-size: .75rem; }
-        .pie-menu, .barra-crema { font-size: .8rem; padding-left: 14px; padding-right: 14px; }
-    }
 </style>
 }
 
 <div class="inicio">
 
-    <!-- ===================== PANTALLA 1: PORTADA ===================== -->
     <section class="pantalla portada">
         <div class="etiqueta-pizza">🍕 Pizza</div>
 
@@ -164,7 +147,6 @@
         </div>
     </section>
 
-    <!-- ===================== PANTALLA 2: MENÚ ===================== -->
     <section class="pantalla menu-pizzas">
         <div class="cabecera">
             <div class="pildora">🛵 FREE DELIVERY</div>
@@ -179,7 +161,9 @@
         </div>
 
         <div class="fila-pizzas" id="filaPizzas">
+            <!-- NOTA: Añadimos data-id con el ID real de la pizza en tu base de datos -->
             <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-id="1"
                     data-nombre="Mozzarella Pizza"
                     data-desc="Salsa de tomate casera, abundante muzzarella derretida y un toque de orégano. La clásica de siempre.">
                 <span class="disco mozzarella" style="--foto:url('/images/mozzarella.png')"></span>
@@ -187,6 +171,7 @@
             </button>
 
             <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-id="2"
                     data-nombre="Pepperoni Pizza"
                     data-desc="Salsa de tomate, muzzarella y rodajas de pepperoni picante, horneadas hasta quedar crocantes en los bordes.">
                 <span class="disco pepperoni" style="--foto:url('/images/pepperoni.png')"></span>
@@ -194,6 +179,7 @@
             </button>
 
             <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-id="3"
                     data-nombre="Napolitana rellena Pizza"
                     data-desc="Rellena de muzzarella y jamón, con rodajas de tomate, rúcula fresca y un hilo de aceite de oliva.">
                 <span class="disco napolitana" style="--foto:url('/images/napolitana.png')"></span>
@@ -201,6 +187,7 @@
             </button>
 
             <button type="button" class="pizza-btn" aria-expanded="false" aria-controls="panelWrap"
+                    data-id="4"
                     data-nombre="Capresse Pizza"
                     data-desc="Muzzarella, tomate fresco, hojas de albahaca y aceite de oliva. Liviana y muy aromática.">
                 <span class="disco caprese" style="--foto:url('/images/caprese.png')"></span>
@@ -208,7 +195,6 @@
             </button>
         </div>
 
-        <!-- Acá se despliega la descripción de la pizza elegida -->
         <div class="panel-wrap" id="panelWrap" aria-live="polite">
             <div>
                 <div class="panel-pizza">
@@ -242,26 +228,28 @@
         boton.addEventListener('click', () => {
             const yaEstabaActiva = boton.classList.contains('activa');
 
-            // Cierra/desmarca todas
             botones.forEach(b => {
                 b.classList.remove('activa');
                 b.setAttribute('aria-expanded', 'false');
             });
 
-            // Si tocó la misma pizza otra vez, solo se cierra el panel
             if (yaEstabaActiva) {
                 panelWrap.classList.remove('abierto');
                 return;
             }
 
-            // Si no, muestra la descripción de la pizza elegida
             boton.classList.add('activa');
             boton.setAttribute('aria-expanded', 'true');
             panelTitulo.textContent = boton.dataset.nombre;
             panelTexto.textContent = boton.dataset.desc;
 
-            // Actualiza el enlace para llevar la variedad elegida
-            btnPedirPizza.href = `/Pedido/Agregar?Id=${encodeURIComponent(boton.dataset.nombre)}`;
+            // =========================================================================
+            // [CAMBIO REALIZADO] 
+            // Pasamos el ID numérico (ej: ?pizzaId=1) en lugar del nombre de la variedad.
+            // Esto conecta de forma limpia con tu Agregar.cshtml y PedidoController 
+            // sin requerir ningún cambio en la estructura de la base de datos.
+            // =========================================================================
+            btnPedirPizza.href = `/Pedido/Agregar?pizzaId=${boton.dataset.id}`;
 
             panelWrap.classList.add('abierto');
         });
