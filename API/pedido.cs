@@ -11,6 +11,7 @@ public class Pedido
     public string? ActorAsignado { get; set; }
     public string? Estado { get; set; }
     public bool Activo { get; set; }
+    public DateTime Momento { get; set; }
     
     // Relación hacia los detalles del pedido
     public List<DetallePedido> Detalles { get; set; } = new();

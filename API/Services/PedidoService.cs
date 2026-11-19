@@ -40,7 +40,8 @@ public class PedidoService
             ActorAsignado = "Cocina",
             Estado = "Espera de confirmación",
             Activo = true,
-            Detalles = detalles
+            Detalles = detalles,
+            Momento = DateTime.Now
         };
 
         _db.Pedidos.Add(pedido);

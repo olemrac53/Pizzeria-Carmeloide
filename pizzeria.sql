@@ -11,10 +11,7 @@ USE 5to_PizzeriaDB;
 CREATE TABLE Clientes (
     Id INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(150) NOT NULL,
-    Direccion VARCHAR(255) NOT NULL,
-    PasswordHash VARCHAR(255) NOT NULL,  
-    Rol VARCHAR(30) NOT NULL DEFAULT 'Cliente',
-    FechaRegistro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    Direccion VARCHAR(255) NOT NULL
 );
 
 -- 3. TABLA FUERTE: Pizzas
@@ -34,6 +31,7 @@ CREATE TABLE Pedidos (
     Estado VARCHAR(50) DEFAULT 'Espera de confirmación',
     Activo TINYINT(1) DEFAULT 1, -- 1 = Activo, 0 = Borrado Lógico
     -- Restricción de integridad referencial
+    Momento DATETIME,
     FOREIGN KEY (ClienteId) REFERENCES Clientes(Id) ON DELETE CASCADE
 );
 
@@ -60,9 +58,3 @@ INSERT INTO Pizzas (Variedad, Precio, Id) VALUES
 
 
 select * from Pizzas;
-
-
-ALTER TABLE Clientes
-    DROP COLUMN PasswordHash,
-    DROP COLUMN Rol,
-    DROP COLUMN FechaRegistro;
