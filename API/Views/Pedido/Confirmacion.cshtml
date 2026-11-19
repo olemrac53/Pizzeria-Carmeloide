@@ -11,7 +11,7 @@
         </div>
         <div class="card-body">
             <h5 class="card-title text-center text-muted mb-4">Comanda N° #<span id="pedidoId">@Model.Id</span></h5>
-            
+
             <ul class="list-group list-group-flush mb-3">
                 <li class="list-group-item"><strong>Cliente:</strong> @Model.Cliente.Nombre</li>
                 <li class="list-group-item"><strong>Dirección:</strong> @Model.Cliente.Direccion</li>
@@ -24,7 +24,7 @@
                 </li>
                 <li class="list-group-item"><strong>Destino:</strong> @Model.ActorAsignado</li>
                 <li class="list-group-item">
-                    <strong>Estado actual:</strong> 
+                    <strong>Estado actual:</strong>
                     <span id="badgeEstado" class="badge bg-warning text-dark fs-6">@Model.Estado</span>
                 </li>
             </ul>
@@ -48,7 +48,7 @@
     const pedidoId = @Model.Id;
     const intervalo = setInterval(async () => {
         try {
-            const resp = await fetch(`/pedidos`);
+            const resp = await fetch(`/api/pedidos`);
             if (resp.ok) {
                 const pedidos = await resp.json();
                 const actual = pedidos.find(p => p.id === pedidoId);
@@ -56,7 +56,7 @@
                     const badge = document.getElementById("badgeEstado");
                     badge.innerText = actual.estado;
                     badge.className = "badge bg-success fs-6";
-                    
+
                     document.getElementById("spinnerCocina").style.display = "none";
                     document.getElementById("textoEsperando").innerText = "¡Cocina recibió y comenzó la preparación!";
                     clearInterval(intervalo);
