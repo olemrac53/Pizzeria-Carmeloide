@@ -48,6 +48,15 @@ CREATE TABLE DetallesPedido (
     FOREIGN KEY (PizzaId) REFERENCES Pizzas(Id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS Usuarios (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    NombreUsuario VARCHAR(50) NOT NULL UNIQUE,
+    Email VARCHAR(150) NOT NULL UNIQUE,
+    PasswordHash VARCHAR(255) NOT NULL,   -- hash de la contraseña, nunca la contraseña real
+    Rol VARCHAR(30) NOT NULL DEFAULT 'Cliente',
+    FechaRegistro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- 2. Cargar los datos de nuevo
 INSERT INTO Pizzas (Variedad, Precio, Id) VALUES
@@ -58,3 +67,8 @@ INSERT INTO Pizzas (Variedad, Precio, Id) VALUES
 
 
 select * from Pizzas;
+
+
+ALTER TABLE Pedidos
+    ADD COLUMN UsuarioId INT NULL,
+    ADD CONSTRAINT FK_Pedidos_Usuarios FOREIGN KEY (UsuarioId) REFERENCES Usuarios(Id);

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PizzeriaBackend.Models;
@@ -46,6 +47,7 @@ namespace PizzeriaBackend.Controllers
             {
                 ClienteNombre = model.ClienteNombre,
                 ClienteDireccion = model.ClienteDireccion,
+                UsuarioId = ObtenerUsuarioId(),
                 Items = model.Items.Select(i => new ItemPedidoDTO
                 {
                     PizzaVariedad = i.PizzaVariedad,
@@ -86,6 +88,31 @@ namespace PizzeriaBackend.Controllers
             }
 
             return View(pedido);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MisPedidos()
+        {
+            var uid = ObtenerUsuarioId();
+            if (uid == null)
+            {
+                return Forbid();
+            }
+
+            var pedidos = await _db.Pedidos
+                .Where(p => p.UsuarioId == uid)
+                .Include(p => p.Detalles)
+                    .ThenInclude(d => d.Pizza)
+                .OrderByDescending(p => p.Momento)
+                .ToListAsync();
+
+            return View(pedidos);
+        }
+
+        private int? ObtenerUsuarioId()
+        {
+            var valor = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(valor, out var id) ? id : null;
         }
 
         private async Task CargarPizzas()

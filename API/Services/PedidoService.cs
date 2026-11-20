@@ -37,6 +37,7 @@ public class PedidoService
         var pedido = new Pedido
         {
             Cliente = cliente,
+            UsuarioId = dto.UsuarioId,
             ActorAsignado = "Cocina",
             Estado = "Espera de confirmación",
             Activo = true,

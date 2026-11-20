@@ -32,7 +32,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 // CONFIGURACIÓN DE LA BASE DE DATOS (MySQL)
-var connectionString = "Server=localhost;Database=5to_PizzeriaDB;User=5to_agbd;Password=Trigg3rs!;";
+var connectionString = "Server=localhost;Database=5to_PizzeriaDB;User=root;Password=root;";
 
 builder.Services.AddDbContext<PizzeriaDb>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));

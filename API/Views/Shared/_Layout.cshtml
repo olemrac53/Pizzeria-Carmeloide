@@ -1,8 +1,8 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@* 
+@*
    Este es el Layout compartido por TODAS las vistas de Home y Pedido.
-   Cada vista individual (Index, Agregar, Confirmacion) ya no necesita 
-   repetir <html>, <head> ni los links de Bootstrap: solo pone su 
+   Cada vista individual (Index, Agregar, Confirmacion) ya no necesita
+   repetir <html>, <head> ni los links de Bootstrap: solo pone su
    contenido, y @RenderBody() de acá abajo lo inserta en el lugar justo.
 *@
 <!DOCTYPE html>
@@ -66,6 +66,14 @@
                         <i class="bi bi-cart-plus me-2"></i> Hacer Pedido
                     </a>
                 </li>
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <li>
+                        <a class="btn btn-outline-light btn-sm w-100 text-start" asp-controller="Pedido" asp-action="MisPedidos">
+                            <i class="bi bi-receipt me-2"></i> Mis Pedidos
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
 
